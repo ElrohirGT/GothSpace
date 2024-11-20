@@ -1,0 +1,12 @@
+[package]
+name = "gothspace"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fastnoise-lite = "1.1.1"
+minifb = "0.27.0"
+mouse-rs = "0.4.2"
+nalgebra-glm = "0.19.0"
+rayon = "1.10.0"
+tobj = "4.0.2"
