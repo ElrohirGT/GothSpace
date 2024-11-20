@@ -1,5 +1,6 @@
 pub mod material;
 pub mod planets;
+pub mod shaders;
 
 use crate::{color::Color, vertex::Vertex};
 use nalgebra_glm::{dot, vec3_to_vec2, Vec2, Vec3};
@@ -135,7 +136,7 @@ pub fn triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex, camera_direction: &Vec3) 
                     // FIXME: For now the normal is fine, but this should ideally be
                     // a position using barycentrics
                     let position = normal;
-                    // let position = a * w1 + b * w2 + c * w3;
+                    // let position = a;
                     Some(Fragment::new_with_intensity(
                         point, base_color, depth, position, intensity,
                     ))

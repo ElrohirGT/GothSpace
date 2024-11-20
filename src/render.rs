@@ -3,10 +3,10 @@ use nalgebra_glm::{Mat4, Vec3};
 use rayon::prelude::*;
 
 use crate::{
-    fragment::{triangle, Fragment},
+    fragment::{shaders::fragment_shader, triangle, Fragment},
     framebuffer::Framebuffer,
     vertex::{
-        shader::{fragment_shader, vertex_shader, Uniforms},
+        shader::{vertex_shader, Uniforms},
         Vertex,
     },
     Entity, Model,

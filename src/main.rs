@@ -176,8 +176,8 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
 
     let scale = 1.0;
     let rotation = Vec3::zeros();
-    // let translation = Vec3::zeros();
-    let translation = vec3(0.0, 0.0, 0.0);
+    let translation = Vec3::zeros();
+    // let translation = vec3(1.0, 0.0, 0.0);
 
     Model {
         entities,
