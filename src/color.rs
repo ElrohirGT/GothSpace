@@ -1,3 +1,5 @@
+pub mod blenders;
+
 /// Represents a Color to print in the screen.
 #[derive(Debug, Clone, Copy)]
 pub struct Color {

@@ -1,10 +1,9 @@
 use nalgebra_glm::{Mat4, Vec3};
 
 use crate::{
-    blenders::BlendMode,
-    color::Color,
+    color::{blenders::BlendMode, Color},
     obj::load_objs,
-    shader::{create_model_matrix, FractalConfig, ShaderType},
+    vertex::shader::{create_model_matrix, CellularConfig, FractalConfig, ShaderType},
     Entity,
 };
 
@@ -109,7 +108,7 @@ pub fn create_face_planet() -> Entity {
                     weighted_strength: 0.0,
                     f_type: fastnoise_lite::FractalType::FBm,
                 },
-                cellular: crate::shader::CellularConfig {
+                cellular: CellularConfig {
                     distance_func: fastnoise_lite::CellularDistanceFunction::EuclideanSq,
                     return_type: fastnoise_lite::CellularReturnType::Distance2Div,
                     jitter: 1.0,
@@ -180,7 +179,7 @@ pub fn create_sun() -> Entity {
                     weighted_strength: 0.0,
                     f_type: fastnoise_lite::FractalType::PingPong,
                 },
-                cellular: crate::shader::CellularConfig {
+                cellular: CellularConfig {
                     distance_func: fastnoise_lite::CellularDistanceFunction::EuclideanSq,
                     return_type: fastnoise_lite::CellularReturnType::Distance,
                     jitter: 1.0,

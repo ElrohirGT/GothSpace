@@ -1,4 +1,7 @@
-use crate::{color::Color, shader::Uniforms, vertex::Vertex};
+pub mod material;
+pub mod planets;
+
+use crate::{color::Color, vertex::Vertex};
 use nalgebra_glm::{dot, vec3_to_vec2, Vec2, Vec3};
 
 pub struct Fragment {

@@ -1,24 +1,19 @@
-pub mod blenders;
 pub mod bmp;
 pub mod camera;
 pub mod color;
 pub mod fragment;
 pub mod framebuffer;
 pub mod light;
-pub mod material;
 pub mod obj;
-pub mod planets;
 pub mod render;
-pub mod shader;
 pub mod vertex;
 
-use blenders::BlendMode;
 use camera::Camera;
-use color::Color;
+use color::{blenders::BlendMode, Color};
 use fastnoise_lite::FastNoiseLite;
 use nalgebra_glm::{Mat4, Vec2, Vec3};
 use obj::Obj;
-use shader::{ShaderType, Uniforms};
+use vertex::shader::{ShaderType, Uniforms};
 
 pub fn equal(a: f32, b: f32, eps: f32) -> bool {
     (a - b).abs() < eps

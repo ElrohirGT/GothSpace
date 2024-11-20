@@ -5,8 +5,10 @@ use rayon::prelude::*;
 use crate::{
     fragment::{triangle, Fragment},
     framebuffer::Framebuffer,
-    shader::{fragment_shader, vertex_shader, Uniforms},
-    vertex::Vertex,
+    vertex::{
+        shader::{fragment_shader, vertex_shader, Uniforms},
+        Vertex,
+    },
     Entity, Model,
 };
 

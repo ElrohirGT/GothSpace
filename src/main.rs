@@ -1,16 +1,14 @@
 use fastnoise_lite::FastNoiseLite;
-use gothspace::blenders::BlendMode;
 use gothspace::camera::Camera;
 use gothspace::color::Color;
-use gothspace::obj::load_objs;
-use gothspace::planets::{
+use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
+use gothspace::obj::load_objs;
 use gothspace::render::render;
-use gothspace::shader::{
-    create_model_matrix, create_noise, create_projection_matrix, create_view_matrix,
-    create_viewport_matrix, ShaderType, Uniforms,
+use gothspace::vertex::shader::{
+    create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };
 use gothspace::{framebuffer, Entity};
 use gothspace::{Message, Model};
