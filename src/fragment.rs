@@ -84,7 +84,12 @@ pub fn wireframe_triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex) -> Vec<Fragment
         .collect()
 }
 
-pub fn triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex, camera_direction: &Vec3) -> Vec<Fragment> {
+pub fn triangle(
+    v1: &Vertex,
+    v2: &Vertex,
+    v3: &Vertex,
+    camera_direction: Option<&Vec3>,
+) -> Vec<Fragment> {
     // let mut fragments = wireframe_triangle(v1, v2, v3);
     // let mut fragments = vec![];
 
@@ -109,10 +114,12 @@ pub fn triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex, camera_direction: &Vec3) 
                     // Interpolated normal...
                     let normal = w1 * v1.normal + w2 * v2.normal + w3 * v3.normal;
                     let normal = normal.normalize();
-                    let camera_intensity = dot(&normal, camera_direction);
-                    if camera_intensity >= 0.0 {
-                        // If the camera is not looking at the fragment, don't compute it!
-                        return None;
+                    if let Some(camera_direction) = camera_direction {
+                        let camera_intensity = dot(&normal, camera_direction);
+                        if camera_intensity >= 0.0 {
+                            // If the camera is not looking at the fragment, don't compute it!
+                            return None;
+                        }
                     }
 
                     let intensity = dot(&light_dir, &normal).clamp(0.0, 1.0);

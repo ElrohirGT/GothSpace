@@ -38,14 +38,14 @@ pub struct Entity {
     pub objs: Vec<Obj>,
     pub shaders: Vec<EntityShader>,
     pub model_matrix: Mat4,
+    /// Optimizes the rendering of triangles,
+    /// may cause some triangles to not render correctly.
+    pub optimize: bool,
 }
 
 pub struct Model {
     pub entities: Vec<Entity>,
     pub render_entities: Vec<Entity>,
     pub uniforms: Uniforms,
-    pub rotation: Vec3,
-    pub translation: Vec3,
-    pub scale: f32,
     pub camera: Camera,
 }

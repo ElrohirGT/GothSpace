@@ -197,9 +197,6 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
             viewport_matrix,
             time: 0.0,
         },
-        rotation,
-        translation,
-        scale,
         camera,
     }
 }
@@ -208,7 +205,6 @@ fn update(data: Model, msg: Message) -> Model {
     match msg {
         Message::RotateCamera(delta_yaw, delta_pitch) => {
             let Model {
-                rotation,
                 mut camera,
                 uniforms,
                 ..
@@ -221,7 +217,6 @@ fn update(data: Model, msg: Message) -> Model {
             };
 
             Model {
-                rotation,
                 uniforms,
                 camera,
                 ..data
@@ -229,7 +224,6 @@ fn update(data: Model, msg: Message) -> Model {
         }
         Message::ZoomCamera(delta_zoom) => {
             let Model {
-                scale,
                 mut camera,
                 uniforms,
                 ..
@@ -243,7 +237,6 @@ fn update(data: Model, msg: Message) -> Model {
 
             Model {
                 uniforms,
-                scale,
                 camera,
                 ..data
             }
