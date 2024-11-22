@@ -35,6 +35,7 @@ pub fn create_disco_planet() -> Entity {
 
     Entity {
         objs: planet_obj,
+        use_normal: true,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
         optimize: true,
@@ -71,6 +72,7 @@ pub fn create_ocean_planet() -> Entity {
     ];
 
     Entity {
+        use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
@@ -90,6 +92,7 @@ pub fn create_gas_giant() -> Entity {
     ];
 
     Entity {
+        use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
@@ -129,6 +132,7 @@ pub fn create_face_planet() -> Entity {
     ];
 
     Entity {
+        use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
@@ -158,6 +162,7 @@ pub fn create_snow_planet() -> Entity {
     ];
 
     Entity {
+        use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
@@ -197,6 +202,7 @@ pub fn create_sun() -> Entity {
     ];
 
     Entity {
+        use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
@@ -248,6 +254,7 @@ pub fn create_green_planet() -> Entity {
 
     Entity {
         objs: planet_obj,
+        use_normal: true,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
         optimize: true,

@@ -25,7 +25,8 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             objs,
             shaders,
             model_matrix,
-            optimize
+            optimize,
+            use_normal
         } = entity;
 
         for vertex_array in objs {
@@ -45,7 +46,15 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             // Rasterization
             // println!("Applying rasterization...");
             let camera_direction = &camera.direction();
-            let fragments = rasterize(triangles, if *optimize {Some(camera_direction)} else {None});
+            let fragments = rasterize(
+                triangles,
+                if *optimize {
+                    Some(camera_direction)
+                } else {
+                    None
+                },
+                *use_normal,
+            );
             // println!("Rasterization applied!");
 
             // println!("Applying fragment shaders...");
@@ -85,10 +94,10 @@ fn assembly(vertices: &[Vertex]) -> Vec<&[Vertex]> {
     // triangles
 }
 
-fn rasterize(triangles: Vec<&[Vertex]>, camera_direction: Option<&Vec3>) -> Vec<Fragment> {
+fn rasterize(triangles: Vec<&[Vertex]>, camera_direction: Option<&Vec3>, use_normal: bool) -> Vec<Fragment> {
     triangles
         .iter()
-        .flat_map(|tri| triangle(&tri[0], &tri[1], &tri[2], camera_direction))
+        .flat_map(|tri| triangle(&tri[0], &tri[1], &tri[2], camera_direction, use_normal))
         .collect()
 }
 

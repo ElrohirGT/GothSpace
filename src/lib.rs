@@ -41,6 +41,8 @@ pub struct Entity {
     /// Optimizes the rendering of triangles,
     /// may cause some triangles to not render correctly.
     pub optimize: bool,
+    /// Whether or not to use vertex_normal instead of vertex_position
+    pub use_normal: bool,
 }
 
 pub struct Model {

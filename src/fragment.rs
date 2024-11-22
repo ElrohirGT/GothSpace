@@ -89,6 +89,7 @@ pub fn triangle(
     v2: &Vertex,
     v3: &Vertex,
     camera_direction: Option<&Vec3>,
+    use_normal: bool,
 ) -> Vec<Fragment> {
     // let mut fragments = wireframe_triangle(v1, v2, v3);
     // let mut fragments = vec![];
@@ -133,7 +134,7 @@ pub fn triangle(
                     // Interpolated position...
                     // FIXME: For now the normal is fine, but this should ideally be
                     // a position using barycentrics
-                    let position = normal;
+                    let position = if use_normal { normal } else { a };
                     // let position = a;
                     // let position = w1 * a + w2 * b + w3 * c;
                     Some(Fragment::new_with_intensity(
