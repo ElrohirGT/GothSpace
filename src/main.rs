@@ -23,10 +23,10 @@ const ZOOM_SPEED: f32 = 1.0;
 const ROTATION_SPEED: f32 = PI / 20.0;
 
 fn main() {
-    let window_width = 1080;
-    let window_height = 720;
+    let window_width = 800;
+    let window_height = 600;
 
-    let framebuffer_width = 1000;
+    let framebuffer_width = 800;
     let framebuffer_height =
         (window_height as f32 / window_width as f32) * framebuffer_width as f32;
     let framebuffer_height = framebuffer_height as usize;
@@ -34,6 +34,7 @@ fn main() {
     println!("Framebuffer: ({framebuffer_width}, {framebuffer_height})");
 
     let mut framebuffer = framebuffer::Framebuffer::new(framebuffer_width, framebuffer_height);
+    framebuffer.set_background_color(0x333355);
 
     let window_options = WindowOptions {
         // resize: true,
@@ -159,7 +160,7 @@ fn main() {
 
 /// Init the default state
 fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize)) -> Model {
-    let (framebuffer_height, framebuffer_width) = framebuffer_dimensions;
+    let (framebuffer_width, framebuffer_height) = framebuffer_dimensions;
     let (window_width, window_height) = window_dimensions;
 
     let start_planet = create_green_planet();
@@ -169,7 +170,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let entities = vec![];
 
     let camera = Camera::new(
-        Vec3::new(0.0, 0.0, 10.0),
+        Vec3::new(0.0, 0.0, 5.0),
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
     );
@@ -179,16 +180,21 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let translation = Vec3::zeros();
     // let translation = vec3(1.0, 0.0, 0.0);
 
+    let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
+    println!("View Matrix: {:#?}", view_matrix);
+    let projection_matrix = create_projection_matrix(window_width as f32, window_height as f32);
+    println!("Projection Matrix: {:#?}", projection_matrix);
+    let viewport_matrix =
+        create_viewport_matrix(framebuffer_width as f32, framebuffer_height as f32);
+    println!("Viewport matrix: {:#?}", viewport_matrix);
+
     Model {
         entities,
         render_entities,
         uniforms: Uniforms {
-            view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
-            projection_matrix: create_projection_matrix(window_width as f32, window_height as f32),
-            viewport_matrix: create_viewport_matrix(
-                framebuffer_width as f32,
-                framebuffer_height as f32,
-            ),
+            view_matrix,
+            projection_matrix,
+            viewport_matrix,
             time: 0.0,
         },
         rotation,

@@ -32,6 +32,9 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             // println!("Applying shaders...");
             let new_vertices = apply_shaders(vertex_array, uniforms, model_matrix);
             // println!("Vertex shader applied!");
+            // for vertex in new_vertices.iter().take(25) {
+            //     println!("Transformed vertex: {:?}", vertex);
+            // }
 
             // Primitive assembly
             // println!("Assembly...");
@@ -67,6 +70,17 @@ fn apply_shaders(vertices: &[Vertex], uniforms: &Uniforms, model_matrix: &Mat4) 
 
 fn assembly(vertices: &[Vertex]) -> Vec<&[Vertex]> {
     vertices.chunks(3).collect()
+    // let mut triangles = Vec::new();
+    // for i in (0..vertices.len()).step_by(3) {
+    //     if i + 2 < vertices.len() {
+    //         triangles.push(&[
+    //             vertices[i].clone(),
+    //             vertices[i + 1].clone(),
+    //             vertices[i + 2].clone(),
+    //         ]);
+    //     }
+    // }
+    // triangles
 }
 
 fn rasterize(triangles: Vec<&[Vertex]>, camera_direction: &Vec3) -> Vec<Fragment> {

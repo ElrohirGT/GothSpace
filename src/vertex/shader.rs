@@ -76,10 +76,11 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
 
     let position = vec4(vertex.position.x, vertex.position.y, vertex.position.z, 1.0);
     let transformed = projection_matrix * view_matrix * model_matrix * position;
-    // println!("{position:?} TURNED INTO {transformed:?}");
 
     let w = transformed.w;
     let ndc_position = vec4(transformed.x / w, transformed.y / w, transformed.z / w, 1.0);
+    // println!("{position:?} TURNED INTO {ndc_position:?}");
+
     let screen_position = viewport_matrix * ndc_position;
     let transformed_position = vec3(screen_position.x, screen_position.y, screen_position.z);
 

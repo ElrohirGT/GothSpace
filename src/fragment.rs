@@ -3,7 +3,7 @@ pub mod planets;
 pub mod shaders;
 
 use crate::{color::Color, vertex::Vertex};
-use nalgebra_glm::{dot, vec3_to_vec2, Vec2, Vec3};
+use nalgebra_glm::{dot, vec2, vec3, vec3_to_vec2, Vec2, Vec3};
 
 pub struct Fragment {
     pub position: Vec2,
@@ -96,18 +96,10 @@ pub fn triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex, camera_direction: &Vec3) 
     let light_dir = Vec3::new(0.0, 0.5, 1.0).normalize();
     let base_color = Color::new(100, 100, 100);
 
-    let step_size = 5e-1;
-    let y_step_count = ((max.y - min.y) / step_size).ceil() as u32;
-    let x_step_count = ((max.x - min.x) / step_size).ceil() as u32;
-
-    let fragments: Vec<Fragment> = (0..y_step_count)
-        .flat_map(|y_idx| {
-            let currenty = min.y + step_size * (y_idx as f32);
-
-            (0..x_step_count).filter_map(move |x_idx| {
-                let currentx = min.x + step_size * (x_idx as f32);
-
-                let point = Vec2::new(currentx, currenty);
+    (min.1..=max.1)
+        .flat_map(|y| {
+            (min.0..=max.0).filter_map(move |x| {
+                let point = vec2(x as f32 + 0.5, y as f32 + 0.5);
                 let (w1, w2, w3) = barycentric_coordinates(&point, &a, &b, &c, triangle_area);
 
                 if (0.0..=1.0).contains(&w1)
@@ -132,11 +124,11 @@ pub fn triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex, camera_direction: &Vec3) 
                     let depth = w1 * a.z + w2 * b.z + w3 * c.z;
 
                     // Interpolated position...
-                    // let position = a;
                     // FIXME: For now the normal is fine, but this should ideally be
                     // a position using barycentrics
                     let position = normal;
                     // let position = a;
+                    // let position = w1 * a + w2 * b + w3 * c;
                     Some(Fragment::new_with_intensity(
                         point, base_color, depth, position, intensity,
                     ))
@@ -145,19 +137,17 @@ pub fn triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex, camera_direction: &Vec3) 
                 }
             })
         })
-        .collect();
-
-    fragments
+        .collect()
 }
 
-pub fn calculate_bounding_box(v1: &Vec3, v2: &Vec3, v3: &Vec3) -> (Vec2, Vec2) {
+pub fn calculate_bounding_box(v1: &Vec3, v2: &Vec3, v3: &Vec3) -> ((i32, i32), (i32, i32)) {
     let minx = v1.x.min(v2.x).min(v3.x);
     let miny = v1.y.min(v2.y).min(v3.y);
 
     let maxx = v1.x.max(v2.x).max(v3.x);
     let maxy = v1.y.max(v2.y).max(v3.y);
 
-    (Vec2::new(minx, miny), Vec2::new(maxx, maxy))
+    ((minx as i32, miny as i32), (maxx as i32, maxy as i32))
 }
 
 // pub fn barycentric_coordinates(p: &Vec3, a: &Vec3, b: &Vec3, c: &Vec3) -> (f32, f32, f32) {
