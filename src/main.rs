@@ -14,13 +14,14 @@ use gothspace::{Message, Model};
 use minifb::{Key, KeyRepeat, Window, WindowOptions};
 use mouse_rs::types::Point;
 use mouse_rs::Mouse;
-use nalgebra_glm::Vec3;
+use nalgebra_glm::{vec3, Vec3};
 use std::collections::VecDeque;
 use std::f32::consts::PI;
 use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 1.0;
-const ROTATION_SPEED: f32 = 4e-3;
+const ROTATION_SPEED: f32 = PI / 20.0;
+const PLAYER_SPEED: f32 = 1.0;
 
 fn main() {
     let window_width = 800;
@@ -93,10 +94,9 @@ fn main() {
             .get_keys_pressed(KeyRepeat::Yes)
             .into_iter()
             .filter_map(|key| match key {
-                // Key::Left => Some(Message::RotateCamera(ROTATION_SPEED, 0.0)),
-                // Key::Right => Some(Message::RotateCamera(-ROTATION_SPEED, 0.0)),
-                // Key::Up => Some(Message::RotateCamera(0.0, -ROTATION_SPEED)),
-                // Key::Down => Some(Message::RotateCamera(0.0, ROTATION_SPEED)),
+                Key::W => Some(Message::Advance(PLAYER_SPEED)),
+                Key::S => Some(Message::Advance(-PLAYER_SPEED)),
+
                 Key::Up => Some(Message::ZoomCamera(ZOOM_SPEED)),
                 Key::Down => Some(Message::ZoomCamera(-ZOOM_SPEED)),
 
@@ -212,7 +212,28 @@ fn update(data: Model, msg: Message) -> Model {
                 ..
             } = data;
 
-            camera.orbit(delta_yaw, delta_pitch);
+            let dir = vec3(delta_yaw, delta_pitch, 1.0).normalize();
+            camera.move_center(dir, ROTATION_SPEED);
+            let uniforms = Uniforms {
+                view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
+                ..uniforms
+            };
+
+            Model {
+                uniforms,
+                camera,
+                ..data
+            }
+        }
+
+        Message::Advance(delta) => {
+            let Model {
+                mut camera,
+                uniforms,
+                ..
+            } = data;
+
+            camera.advance_camera(delta);
             let uniforms = Uniforms {
                 view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
                 ..uniforms

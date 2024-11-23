@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use nalgebra_glm::{rotate_vec3, Vec3};
+use nalgebra_glm::{rotate_vec3, vec3, Vec3};
 
 pub struct Camera {
     /// Determines whether or not the camera has changed.
@@ -31,6 +31,15 @@ impl Camera {
         }
     }
 
+    /// Advances the camera by a certain delta in the direction is facing.
+    pub fn advance_camera(&mut self, delta: f32) {
+        let delta_vec = self.direction() * delta;
+
+        self.eye += delta_vec;
+        self.center += delta_vec;
+        self.has_changed = true;
+    }
+
     /// Makes the camera rotate it's center by a given yaw and pitch.
     ///
     /// * `delta_yaw`: Rotates the camera from left to right.
@@ -59,7 +68,7 @@ impl Camera {
         self.has_changed = true;
     }
 
-    /// Moves the camera by it's center.
+    /// Moves the point the camera is looking at.
     ///
     /// * `direction`: The direction to move the camera by.
     /// * `rotation_speed`: The speed to which move the camera by.

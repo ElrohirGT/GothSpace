@@ -29,6 +29,7 @@ pub enum Message {
     ZoomCamera(f32),
     UpdateTime(f32),
     ChangePlanet(Entity),
+    Advance(f32),
 }
 
 pub type EntityShader = (ShaderType, Vec<Color>, BlendMode);
