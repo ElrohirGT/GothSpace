@@ -4,7 +4,7 @@ use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
-use gothspace::fragment::ship::{create_ship, rotation_from_camera, translation_from_camera};
+use gothspace::fragment::ship::{create_ship, translation_from_camera};
 use gothspace::render::render;
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
@@ -252,8 +252,10 @@ fn update(data: Model, msg: Message) -> Model {
                 ..uniforms
             };
 
+            let rotation_y = ship.model.rotation.y - delta_yaw * ROTATION_SPEED / 2.0;
+            let rotation_x = ship.model.rotation.x - delta_pitch * ROTATION_SPEED / 2.0;
             ship.modify_model(EntityModel {
-                rotation: rotation_from_camera(&camera),
+                rotation: vec3(rotation_x, rotation_y, ship.model.rotation.z),
                 translation: translation_from_camera(&camera),
                 ..ship.model
             });
@@ -313,4 +315,15 @@ fn center_of_screen(wx: i32, wy: i32, window_width: i32, window_height: i32) -> 
         x: wx + window_width / 2,
         y: wy + window_height / 2,
     }
+}
+
+fn vec_from_angles(alpha: f32, beta: f32) -> Vec3 {
+    let (alphasin, alphacos) = alpha.sin_cos();
+    let (betasin, betacos) = beta.sin_cos();
+
+    let x = alphacos * betacos;
+    let z = alphasin * betacos;
+    let y = betasin;
+
+    vec3(x, y, z)
 }
