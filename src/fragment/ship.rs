@@ -13,7 +13,7 @@ use crate::{
 const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
 
 pub fn create_ship(camera: &Camera) -> Entity {
-    let ship_obj = load_objs("BlueFalcon.obj").unwrap();
+    let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
 
     let shaders = vec![
         (

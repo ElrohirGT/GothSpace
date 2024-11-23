@@ -20,8 +20,10 @@ pub fn create_default_planet_model() -> EntityModel {
     }
 }
 
+const SPHERE_OBJ: &str = "assets/models/sphere.obj";
+
 pub fn create_disco_planet() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::MovingStripes {
@@ -54,7 +56,7 @@ pub fn create_disco_planet() -> Entity {
 }
 
 pub fn create_ocean_planet() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::MovingStripes {
@@ -94,7 +96,7 @@ pub fn create_ocean_planet() -> Entity {
 }
 
 pub fn create_gas_giant() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::BaseColor,
@@ -116,7 +118,7 @@ pub fn create_gas_giant() -> Entity {
 }
 
 pub fn create_face_planet() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::CellularShader {
@@ -158,7 +160,7 @@ pub fn create_face_planet() -> Entity {
 }
 
 pub fn create_snow_planet() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::FBmShader {
@@ -190,7 +192,7 @@ pub fn create_snow_planet() -> Entity {
 }
 
 pub fn create_sun() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::BaseColor,
@@ -232,7 +234,7 @@ pub fn create_sun() -> Entity {
 }
 
 pub fn create_green_planet() -> Entity {
-    let planet_obj = load_objs("sphere.obj").unwrap();
+    let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
             ShaderType::BaseColor,
