@@ -82,7 +82,6 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
 
     let w = transformed.w;
     let ndc_position = vec4(transformed.x / w, transformed.y / w, transformed.z / w, 1.0);
-    // println!("{position:?} TURNED INTO {ndc_position:?}");
 
     let screen_position = viewport_matrix * ndc_position;
     let transformed_position = vec3(screen_position.x, screen_position.y, screen_position.z);
@@ -103,12 +102,15 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
     // let transformed_normal = vertex.normal;
     // println!("{normal_matrix:?} -> {transformed_normal:?}");
 
-    Vertex {
+    let vertex = Vertex {
         position: transformed_position,
         normal: transformed_normal,
         tex_coords: vertex.tex_coords,
         color: vertex.color,
-    }
+        frustum_position: ndc_position,
+    };
+
+    vertex
 }
 
 pub fn create_model_matrix(translation: Vec3, scale: f32, rotation: Vec3) -> Mat4 {
@@ -161,7 +163,7 @@ pub fn create_projection_matrix(window_width: f32, window_height: f32) -> Mat4 {
     let fov = 45.0 * PI / 180.0;
     let aspect_ratio = window_width / window_height;
     let near = 0.1;
-    let far = 1000.0;
+    let far = 50.0;
 
     nalgebra_glm::perspective(fov, aspect_ratio, near, far)
 }

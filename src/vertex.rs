@@ -1,11 +1,12 @@
 pub mod shader;
 
 use crate::{color::Color, texture::Textures};
-use nalgebra_glm::{Vec2, Vec3};
+use nalgebra_glm::{Vec2, Vec3, Vec4};
 
 #[derive(Clone, Debug)]
 pub struct Vertex {
     pub position: Vec3,
+    pub frustum_position: Vec4,
     pub normal: Vec3,
     pub tex_coords: Vec2,
     pub color: Color,
@@ -18,6 +19,7 @@ impl Vertex {
             normal,
             tex_coords,
             color: Color::black(),
+            frustum_position: Vec4::zeros(),
         }
     }
 
@@ -27,6 +29,7 @@ impl Vertex {
             normal: Vec3::new(0.0, 0.0, 0.0),
             tex_coords: Vec2::new(0.0, 0.0),
             color,
+            frustum_position: Vec4::zeros(),
         }
     }
 
@@ -43,6 +46,7 @@ impl Default for Vertex {
             normal: Vec3::new(0.0, 1.0, 0.0),
             tex_coords: Vec2::new(0.0, 0.0),
             color: Color::black(),
+            frustum_position: Vec4::zeros(),
         }
     }
 }

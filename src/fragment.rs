@@ -107,52 +107,50 @@ pub fn triangle(
     let light_dir = Vec3::new(0.0, 0.5, 1.0).normalize();
     let base_color = Color::new(100, 100, 100);
 
-    (min.1..=max.1)
-        .flat_map(|y| {
-            (min.0..=max.0).filter_map(move |x| {
-                let point = vec2(x as f32 + 0.5, y as f32 + 0.5);
-                let (w1, w2, w3) = barycentric_coordinates(&point, &a, &b, &c, triangle_area);
+    let possible_fragment_count = (max.1 - min.1) * (max.0 - min.0);
+    let mut fragments = Vec::with_capacity(possible_fragment_count as usize);
 
-                if (0.0..=1.0).contains(&w1)
-                    && (0.0..=1.0).contains(&w2)
-                    && (0.0..=1.0).contains(&w3)
-                {
-                    // Interpolated normal...
-                    let normal = w1 * v1.normal + w2 * v2.normal + w3 * v3.normal;
-                    let normal = normal.normalize();
-                    if let Some(camera_direction) = camera_direction {
-                        let camera_intensity = dot(&normal, camera_direction);
-                        if camera_intensity >= 0.0 {
-                            // If the camera is not looking at the fragment, don't compute it!
-                            return None;
-                        }
+    (min.1..=max.1).for_each(|y| {
+        (min.0..=max.0).for_each(|x| {
+            let point = vec2(x as f32 + 0.5, y as f32 + 0.5);
+            let (w1, w2, w3) = barycentric_coordinates(&point, &a, &b, &c, triangle_area);
+
+            if (0.0..=1.0).contains(&w1) && (0.0..=1.0).contains(&w2) && (0.0..=1.0).contains(&w3) {
+                // Interpolated normal...
+                let normal = w1 * v1.normal + w2 * v2.normal + w3 * v3.normal;
+                let normal = normal.normalize();
+                if let Some(camera_direction) = camera_direction {
+                    let camera_intensity = dot(&normal, camera_direction);
+                    if camera_intensity >= 0.0 {
+                        // If the camera is not looking at the fragment, don't compute it!
+                        return;
                     }
-
-                    let intensity = dot(&light_dir, &normal).clamp(0.0, 1.0);
-                    // if intensity <= 0.0 {
-                    //     println!("The intensity is {intensity}! {light_dir:?} dot {normal:?}");
-                    // }
-
-                    // Interpolated depth...
-                    let depth = w1 * a.z + w2 * b.z + w3 * c.z;
-
-                    // Interpolated position...
-                    // FIXME: For now the normal is fine, but this should ideally be
-                    // a position using barycentrics
-                    let position = if use_normal { normal } else { a };
-                    let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
-
-                    // let position = a;
-                    // let position = w1 * a + w2 * b + w3 * c;
-                    Some(Fragment::new_with_intensity(
-                        point, base_color, depth, position, intensity, tex_cords,
-                    ))
-                } else {
-                    None
                 }
-            })
+
+                let intensity = dot(&light_dir, &normal).clamp(0.0, 1.0);
+                // if intensity <= 0.0 {
+                //     println!("The intensity is {intensity}! {light_dir:?} dot {normal:?}");
+                // }
+
+                // Interpolated depth...
+                let depth = w1 * a.z + w2 * b.z + w3 * c.z;
+
+                // Interpolated position...
+                // FIXME: For now the normal is fine, but this should ideally be
+                // a position using barycentrics
+                let position = if use_normal { normal } else { a };
+                let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
+
+                // let position = a;
+                // let position = w1 * a + w2 * b + w3 * c;
+                fragments.push(Fragment::new_with_intensity(
+                    point, base_color, depth, position, intensity, tex_cords,
+                ));
+            }
         })
-        .collect()
+    });
+
+    fragments
 }
 
 pub fn calculate_bounding_box(v1: &Vec3, v2: &Vec3, v3: &Vec3) -> ((i32, i32), (i32, i32)) {

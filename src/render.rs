@@ -49,7 +49,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
 
             // Primitive assembly
             // println!("Assembly...");
-            let triangles = assembly(&new_vertices);
+            let triangles = assembly(&new_vertices, *optimize);
             // println!("Assembly done!");
 
             // Rasterization
@@ -88,19 +88,32 @@ fn apply_shaders(vertices: &[Vertex], uniforms: &Uniforms, model_matrix: &Mat4) 
         .collect()
 }
 
-fn assembly(vertices: &[Vertex]) -> Vec<&[Vertex]> {
-    vertices.chunks(3).collect()
-    // let mut triangles = Vec::new();
-    // for i in (0..vertices.len()).step_by(3) {
-    //     if i + 2 < vertices.len() {
-    //         triangles.push(&[
-    //             vertices[i].clone(),
-    //             vertices[i + 1].clone(),
-    //             vertices[i + 2].clone(),
-    //         ]);
-    //     }
-    // }
-    // triangles
+fn assembly(vertices: &[Vertex], should_optimize: bool) -> Vec<&[Vertex]> {
+    let triangles = vertices.chunks(3);
+
+    if should_optimize {
+        triangles
+            .filter(|triangle_vertices| {
+                let range = -1.0..1.0;
+                let a = &triangle_vertices[0];
+                let b = &triangle_vertices[1];
+                let c = &triangle_vertices[2];
+                let a_in_range = range.contains(&a.frustum_position.x)
+                    && range.contains(&a.frustum_position.y)
+                    && range.contains(&a.frustum_position.z);
+                let b_in_range = range.contains(&b.frustum_position.x)
+                    && range.contains(&b.frustum_position.y)
+                    && range.contains(&b.frustum_position.z);
+                let c_in_range = range.contains(&c.frustum_position.x)
+                    && range.contains(&c.frustum_position.y)
+                    && range.contains(&c.frustum_position.z);
+
+                a_in_range && b_in_range && c_in_range
+            })
+            .collect()
+    } else {
+        triangles.collect()
+    }
 }
 
 fn rasterize(
