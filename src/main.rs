@@ -5,13 +5,14 @@ use gothspace::fragment::planets::{
     create_ocean_planet, create_snow_planet, create_sun,
 };
 use gothspace::fragment::ship::create_ship;
+use gothspace::framebuffer;
 use gothspace::render::render;
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };
-use gothspace::framebuffer;
 use gothspace::{Message, Model};
 use minifb::{Key, KeyRepeat, Window, WindowOptions};
+use mouse_rs::types::Point;
 use mouse_rs::Mouse;
 use nalgebra_glm::Vec3;
 use std::collections::VecDeque;
@@ -19,7 +20,7 @@ use std::f32::consts::PI;
 use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 1.0;
-const ROTATION_SPEED: f32 = PI / 20.0;
+const ROTATION_SPEED: f32 = 4e-3;
 
 fn main() {
     let window_width = 800;
@@ -46,7 +47,16 @@ fn main() {
         Window::new(title_prefix, window_width, window_height, window_options).unwrap();
     window.set_key_repeat_delay(0.01);
     window.set_cursor_visibility(true);
+
+    let (wx, wy) = window.get_position();
     let mouse = Mouse::new();
+    let mut previous_mouse_pos: Point = Point {
+        x: wx as i32 + window_width as i32 / 2,
+        y: wy as i32 + window_height as i32 / 2,
+    };
+    mouse
+        .move_to(previous_mouse_pos.x, previous_mouse_pos.y)
+        .unwrap();
 
     let target_framerate = 60;
     let frame_delay = Duration::from_millis(1000 / target_framerate);
@@ -83,13 +93,12 @@ fn main() {
             .get_keys_pressed(KeyRepeat::Yes)
             .into_iter()
             .filter_map(|key| match key {
-                Key::Left => Some(Message::RotateCamera(ROTATION_SPEED, 0.0)),
-                Key::Right => Some(Message::RotateCamera(-ROTATION_SPEED, 0.0)),
-                Key::Up => Some(Message::RotateCamera(0.0, -ROTATION_SPEED)),
-                Key::Down => Some(Message::RotateCamera(0.0, ROTATION_SPEED)),
-
-                Key::W => Some(Message::ZoomCamera(ZOOM_SPEED)),
-                Key::S => Some(Message::ZoomCamera(-ZOOM_SPEED)),
+                // Key::Left => Some(Message::RotateCamera(ROTATION_SPEED, 0.0)),
+                // Key::Right => Some(Message::RotateCamera(-ROTATION_SPEED, 0.0)),
+                // Key::Up => Some(Message::RotateCamera(0.0, -ROTATION_SPEED)),
+                // Key::Down => Some(Message::RotateCamera(0.0, ROTATION_SPEED)),
+                Key::Up => Some(Message::ZoomCamera(ZOOM_SPEED)),
+                Key::Down => Some(Message::ZoomCamera(-ZOOM_SPEED)),
 
                 Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
                 Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
@@ -98,14 +107,6 @@ fn main() {
                 Key::Key5 => Some(Message::ChangePlanet(create_snow_planet())),
                 Key::Key6 => Some(Message::ChangePlanet(create_sun())),
                 Key::Key7 => Some(Message::ChangePlanet(create_green_planet())),
-
-                // Key::Tab => {
-                //     should_update = true;
-                //     Some(match data.daytime {
-                //         gothspace::TimeOfDay::Day => Message::TimeToNight,
-                //         gothspace::TimeOfDay::Night => Message::TimeToDay,
-                //     })
-                // }
 
                 // Key::Space => match (mode_cooldown_timer, &data.status) {
                 //     (0, GameStatus::MainMenu) => {
@@ -126,6 +127,13 @@ fn main() {
             .collect();
         should_update = true;
         messages.push(Message::UpdateTime(time));
+
+        let Point { x, y } = mouse.get_position().unwrap();
+        messages.push(Message::RotateCamera(
+            (previous_mouse_pos.x - x) as f32 * ROTATION_SPEED,
+            (previous_mouse_pos.y - y) as f32 * ROTATION_SPEED,
+        ));
+        previous_mouse_pos = Point { x, y };
 
         for msg in messages {
             data = update(data, msg);
@@ -216,6 +224,7 @@ fn update(data: Model, msg: Message) -> Model {
                 ..data
             }
         }
+
         Message::ZoomCamera(delta_zoom) => {
             let Model {
                 mut camera,
