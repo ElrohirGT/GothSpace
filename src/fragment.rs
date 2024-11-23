@@ -96,6 +96,7 @@ pub fn triangle(
     camera_direction: Option<&Vec3>,
     use_normal: bool,
     lights: &[Light],
+    custom_depth: Option<f32>,
 ) -> Vec<Fragment> {
     // let mut fragments = wireframe_triangle(v1, v2, v3);
     // let mut fragments = vec![];
@@ -129,7 +130,11 @@ pub fn triangle(
                 }
 
                 // Interpolated depth...
-                let depth = w1 * v1.position.z + w2 * v2.position.z + w3 * v3.position.z;
+                let depth = if let Some(d) = custom_depth {
+                    d
+                } else {
+                    w1 * v1.position.z + w2 * v2.position.z + w3 * v3.position.z
+                };
 
                 // FIXME: For now the normal is fine, but this should ideally be
                 // a position using barycentrics

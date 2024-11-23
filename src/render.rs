@@ -37,6 +37,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             model_matrix,
             optimizations,
             use_normal,
+            custom_depth,
             ..
         } = entity;
 
@@ -66,6 +67,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
                 },
                 *use_normal,
                 lights,
+                *custom_depth,
             );
             // println!("Rasterization applied!");
 
@@ -124,6 +126,7 @@ fn rasterize(
     camera_direction: Option<&Vec3>,
     use_normal: bool,
     lights: &[Light],
+    custom_depth: Option<f32>,
 ) -> Vec<Fragment> {
     triangles
         .iter()
@@ -135,6 +138,7 @@ fn rasterize(
                 camera_direction,
                 use_normal,
                 lights,
+                custom_depth,
             )
         })
         .collect()

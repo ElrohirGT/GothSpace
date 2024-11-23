@@ -1,4 +1,4 @@
-use std::f32::consts::PI;
+use std::f32::{consts::PI, NEG_INFINITY};
 
 use nalgebra_glm::{vec3, Vec3};
 
@@ -43,6 +43,7 @@ pub fn create_ship(camera: &Camera) -> Entity {
             scale,
             translation,
         },
+        custom_depth: Some(NEG_INFINITY),
     }
 }
 

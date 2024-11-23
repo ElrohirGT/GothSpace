@@ -49,6 +49,7 @@ pub fn create_disco_planet() -> Entity {
     ];
 
     Entity {
+        custom_depth: None,
         model: create_default_planet_model(),
         objs: planet_obj,
         use_normal: true,
@@ -88,6 +89,7 @@ pub fn create_ocean_planet() -> Entity {
     ];
 
     Entity {
+        custom_depth: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -109,6 +111,7 @@ pub fn create_gas_giant() -> Entity {
     ];
 
     Entity {
+        custom_depth: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -150,6 +153,7 @@ pub fn create_face_planet() -> Entity {
     ];
 
     Entity {
+        custom_depth: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -181,6 +185,7 @@ pub fn create_snow_planet() -> Entity {
     ];
 
     Entity {
+        custom_depth: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -225,6 +230,7 @@ pub fn create_sun() -> Entity {
     model.scale *= 4.0;
 
     Entity {
+        custom_depth: None,
         model_matrix: create_model_matrix(model.translation, model.scale, model.rotation),
         model,
         use_normal: true,
@@ -277,6 +283,7 @@ pub fn create_green_planet() -> Entity {
     ];
 
     Entity {
+        custom_depth: None,
         model: create_default_planet_model(),
         objs: planet_obj,
         use_normal: true,

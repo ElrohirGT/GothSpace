@@ -58,6 +58,8 @@ pub struct Entity {
     /// Whether or not to use vertex_normal instead of vertex_position
     pub use_normal: bool,
     pub model: EntityModel,
+    /// Lower depth means it will be rendered on top other stuff
+    pub custom_depth: Option<f32>,
 }
 
 impl Entity {
