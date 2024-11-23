@@ -5,7 +5,6 @@ use gothspace::fragment::planets::{
     create_ocean_planet, create_snow_planet, create_sun,
 };
 use gothspace::fragment::ship::{create_ship, translation_from_camera};
-use gothspace::fragment::skybox::create_skybox;
 use gothspace::render::render;
 use gothspace::texture::{GameTextures, Texture};
 use gothspace::vertex::shader::{
@@ -215,8 +214,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     );
     let ship = create_ship(&camera);
     let planet = create_green_planet();
-    let skybox = create_skybox();
-    let entities = vec![skybox, planet];
+    let entities = vec![planet];
     // let entities = vec![];
 
     let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
