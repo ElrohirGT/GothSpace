@@ -271,13 +271,7 @@ pub fn create_green_planet() -> Entity {
             vec![Color::new(0, 0, 100)],
             BlendMode::Subtract,
         ),
-        (
-            ShaderType::Texture {
-                texture: Textures::Space,
-            },
-            vec![],
-            BlendMode::Replace,
-        ), // (ShaderType::Intensity, vec![], BlendMode::Replace),
+        // (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
     Entity {

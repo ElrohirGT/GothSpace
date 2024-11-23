@@ -1,6 +1,6 @@
 use core::f32;
 
-use crate::{bmp::write_bmp_file, color::Color};
+use crate::{bmp::write_bmp_file, color::Color, texture::Texture};
 
 type Buffer = Vec<u32>;
 
@@ -159,6 +159,29 @@ impl Framebuffer {
 
         *background_color = new_color.into();
         *empty_buffer = create_filled_buffer(width, height, background_color);
+    }
+
+    pub fn set_background_from_texture(&mut self, texture: Texture) {
+        let Framebuffer {
+            width,
+            height,
+            empty_buffer,
+            ..
+        } = self;
+
+        let tex = &texture;
+        let f_width = *width as f32;
+        let f_height = *height as f32;
+
+        *empty_buffer = (0..*width)
+            .flat_map(|x| {
+                let x = x as f32 / f_width;
+                (0..*height).map(move |y| {
+                    let y = y as f32 / f_height;
+                    tex.get_pixel_color(x, y).into()
+                })
+            })
+            .collect();
     }
 
     /// Sets the `current_color` property.
