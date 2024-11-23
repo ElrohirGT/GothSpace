@@ -41,13 +41,19 @@ pub struct EntityModel {
     pub translation: Vec3,
 }
 
+pub struct EntityOptimizations {
+    /// Don't render triangles whose normal is in the same direction as the camera is looking
+    /// May cause some X-ray vision bugs...
+    pub camera_direction: bool,
+    /// Don't render the triangle if the camera isn't looking in that direction
+    pub frustum_cutting: bool,
+}
+
 pub struct Entity {
     pub objs: Vec<Obj>,
     pub shaders: Vec<EntityShader>,
     pub model_matrix: Mat4,
-    /// Optimizes the rendering of triangles,
-    /// may cause some triangles to not render correctly.
-    pub optimize: bool,
+    pub optimizations: EntityOptimizations,
     /// Whether or not to use vertex_normal instead of vertex_position
     pub use_normal: bool,
     pub model: EntityModel,

@@ -5,7 +5,7 @@ use crate::{
     obj::load_objs,
     texture::Textures,
     vertex::shader::{create_model_matrix, CellularConfig, FractalConfig, ShaderType},
-    Entity, EntityModel,
+    Entity, EntityModel, EntityOptimizations,
 };
 
 pub fn create_default_planet_model_matrix() -> Mat4 {
@@ -22,6 +22,10 @@ pub fn create_default_planet_model() -> EntityModel {
 }
 
 const SPHERE_OBJ: &str = "assets/models/sphere.obj";
+const OPTIMIZATIONS: EntityOptimizations = EntityOptimizations {
+    camera_direction: true,
+    frustum_cutting: true,
+};
 
 pub fn create_disco_planet() -> Entity {
     let planet_obj = load_objs(SPHERE_OBJ).unwrap();
@@ -51,7 +55,7 @@ pub fn create_disco_planet() -> Entity {
         use_normal: true,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }
 
@@ -90,7 +94,7 @@ pub fn create_ocean_planet() -> Entity {
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }
 
@@ -111,7 +115,7 @@ pub fn create_gas_giant() -> Entity {
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }
 
@@ -152,7 +156,7 @@ pub fn create_face_planet() -> Entity {
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }
 
@@ -183,7 +187,7 @@ pub fn create_snow_planet() -> Entity {
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }
 
@@ -224,7 +228,7 @@ pub fn create_sun() -> Entity {
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }
 
@@ -282,6 +286,6 @@ pub fn create_green_planet() -> Entity {
         use_normal: true,
         model_matrix: create_default_planet_model_matrix(),
         shaders,
-        optimize: true,
+        optimizations: OPTIMIZATIONS,
     }
 }

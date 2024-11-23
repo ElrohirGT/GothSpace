@@ -33,7 +33,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             objs,
             shaders,
             model_matrix,
-            optimize,
+            optimizations,
             use_normal,
             ..
         } = entity;
@@ -49,7 +49,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
 
             // Primitive assembly
             // println!("Assembly...");
-            let triangles = assembly(&new_vertices, *optimize);
+            let triangles = assembly(&new_vertices, optimizations.frustum_cutting);
             // println!("Assembly done!");
 
             // Rasterization
@@ -57,7 +57,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             let camera_direction = &camera.direction();
             let fragments = rasterize(
                 triangles,
-                if *optimize {
+                if optimizations.camera_direction {
                     Some(camera_direction)
                 } else {
                     None
