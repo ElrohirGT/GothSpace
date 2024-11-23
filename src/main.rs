@@ -1,10 +1,12 @@
 use fastnoise_lite::FastNoiseLite;
 use gothspace::camera::Camera;
+use gothspace::color::Color;
 use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
 use gothspace::fragment::ship::{create_ship, translation_from_camera};
+use gothspace::light::Light;
 use gothspace::render::render;
 use gothspace::texture::{GameTextures, Texture};
 use gothspace::vertex::shader::{
@@ -25,10 +27,10 @@ const ROTATION_SPEED: f32 = PI / 60.0;
 const PLAYER_SPEED: f32 = 0.2;
 
 fn main() {
-    let window_width = 800;
-    let window_height = 600;
+    let window_width = 1080;
+    let window_height = 720;
 
-    let framebuffer_width = 800;
+    let framebuffer_width = 1080;
     let framebuffer_height =
         (window_height as f32 / window_width as f32) * framebuffer_width as f32;
     let framebuffer_height = framebuffer_height as usize;
@@ -225,6 +227,12 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         create_viewport_matrix(framebuffer_width as f32, framebuffer_height as f32);
     println!("Viewport matrix: {:#?}", viewport_matrix);
 
+    let lights = vec![Light {
+        position: Vec3::zeros(),
+        color: Color::white(),
+        intensity: 1.0,
+    }];
+
     let textures = GameTextures::new("assets/textures/");
     Model {
         textures,
@@ -237,6 +245,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
             time: 0.0,
         },
         camera,
+        lights,
     }
 }
 

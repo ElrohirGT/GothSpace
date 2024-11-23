@@ -11,6 +11,7 @@ pub mod vertex;
 
 use camera::Camera;
 use color::{blenders::BlendMode, Color};
+use light::Light;
 use nalgebra_glm::{Mat4, Vec2, Vec3};
 use obj::Obj;
 use texture::GameTextures;
@@ -74,4 +75,5 @@ pub struct Model {
     pub uniforms: Uniforms,
     pub camera: Camera,
     pub textures: GameTextures,
+    pub lights: Vec<Light>,
 }

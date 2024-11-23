@@ -161,6 +161,7 @@ impl Framebuffer {
         *empty_buffer = create_filled_buffer(width, height, background_color);
     }
 
+    /// Sets the `background` array from the framebuffer to the value from a texture.
     pub fn set_background_from_texture(&mut self, texture: Texture) {
         let Framebuffer {
             width,

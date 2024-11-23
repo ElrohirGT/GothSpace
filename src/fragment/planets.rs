@@ -221,11 +221,14 @@ pub fn create_sun() -> Entity {
         // (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let mut model = create_default_planet_model();
+    model.scale *= 4.0;
+
     Entity {
-        model: create_default_planet_model(),
+        model_matrix: create_model_matrix(model.translation, model.scale, model.rotation),
+        model,
         use_normal: true,
         objs: planet_obj,
-        model_matrix: create_default_planet_model_matrix(),
         shaders,
         optimizations: OPTIMIZATIONS,
     }

@@ -3,7 +3,7 @@ pub mod planets;
 pub mod shaders;
 pub mod ship;
 
-use crate::{color::Color, vertex::Vertex};
+use crate::{color::Color, light::Light, vertex::Vertex};
 use nalgebra_glm::{dot, vec2, vec3_to_vec2, Vec2, Vec3};
 
 pub struct Fragment {
@@ -95,6 +95,7 @@ pub fn triangle(
     v3: &Vertex,
     camera_direction: Option<&Vec3>,
     use_normal: bool,
+    lights: &[Light],
 ) -> Vec<Fragment> {
     // let mut fragments = wireframe_triangle(v1, v2, v3);
     // let mut fragments = vec![];
@@ -104,7 +105,6 @@ pub fn triangle(
     let triangle_area = edge_function(&a, &b, &vec3_to_vec2(&c));
     let (min, max) = calculate_bounding_box(&a, &b, &c);
 
-    let light_dir = Vec3::new(0.0, 0.5, 1.0).normalize();
     let base_color = Color::new(100, 100, 100);
 
     let possible_fragment_count = (max.1 - min.1) * (max.0 - min.0);
@@ -127,7 +127,17 @@ pub fn triangle(
                     }
                 }
 
-                let intensity = dot(&light_dir, &normal).clamp(0.0, 1.0);
+                let position = if use_normal { normal } else { a };
+                let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
+
+                let mut intensity = 0.0;
+                for light_source in lights {
+                    let light_dir = position - light_source.position;
+                    intensity += dot(&light_dir, &normal) * light_source.intensity;
+                }
+
+                intensity = intensity.clamp(0.0, 1.0);
+
                 // if intensity <= 0.0 {
                 //     println!("The intensity is {intensity}! {light_dir:?} dot {normal:?}");
                 // }
@@ -138,8 +148,6 @@ pub fn triangle(
                 // Interpolated position...
                 // FIXME: For now the normal is fine, but this should ideally be
                 // a position using barycentrics
-                let position = if use_normal { normal } else { a };
-                let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
 
                 // let position = a;
                 // let position = w1 * a + w2 * b + w3 * c;

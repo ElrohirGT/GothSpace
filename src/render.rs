@@ -5,6 +5,7 @@ use rayon::prelude::*;
 use crate::{
     fragment::{shaders::fragment_shader, triangle, Fragment},
     framebuffer::Framebuffer,
+    light::Light,
     vertex::{
         shader::{vertex_shader, Uniforms},
         Vertex,
@@ -19,6 +20,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
         camera,
         ship,
         textures,
+        lights,
         ..
     } = data;
 
@@ -63,6 +65,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
                     None
                 },
                 *use_normal,
+                lights,
             );
             // println!("Rasterization applied!");
 
@@ -120,10 +123,20 @@ fn rasterize(
     triangles: Vec<&[Vertex]>,
     camera_direction: Option<&Vec3>,
     use_normal: bool,
+    lights: &[Light],
 ) -> Vec<Fragment> {
     triangles
         .iter()
-        .flat_map(|tri| triangle(&tri[0], &tri[1], &tri[2], camera_direction, use_normal))
+        .flat_map(|tri| {
+            triangle(
+                &tri[0],
+                &tri[1],
+                &tri[2],
+                camera_direction,
+                use_normal,
+                lights,
+            )
+        })
         .collect()
 }
 
