@@ -3,7 +3,6 @@ use nalgebra_glm::{Mat4, Vec3};
 use crate::{
     color::{blenders::BlendMode, Color},
     obj::load_objs,
-    texture::Textures,
     vertex::shader::{create_model_matrix, CellularConfig, FractalConfig, ShaderType},
     Entity, EntityModel, EntityOptimizations,
 };

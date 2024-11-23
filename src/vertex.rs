@@ -1,6 +1,6 @@
 pub mod shader;
 
-use crate::{color::Color, texture::Textures};
+use crate::color::Color;
 use nalgebra_glm::{Vec2, Vec3, Vec4};
 
 #[derive(Clone, Debug)]

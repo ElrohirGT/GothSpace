@@ -1,7 +1,6 @@
 use nalgebra_glm::Vec3;
 
 use crate::{
-    camera::Camera,
     color::blenders::BlendMode,
     obj::load_objs,
     texture::Textures,

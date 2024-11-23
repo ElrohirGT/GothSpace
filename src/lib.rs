@@ -13,7 +13,7 @@ use camera::Camera;
 use color::{blenders::BlendMode, Color};
 use nalgebra_glm::{Mat4, Vec2, Vec3};
 use obj::Obj;
-use texture::{GameTextures, Texture};
+use texture::GameTextures;
 use vertex::shader::{create_model_matrix, ShaderType, Uniforms};
 
 pub fn equal(a: f32, b: f32, eps: f32) -> bool {

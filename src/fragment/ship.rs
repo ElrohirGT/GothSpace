@@ -4,7 +4,7 @@ use nalgebra_glm::{vec3, Vec3};
 
 use crate::{
     camera::Camera,
-    color::{blenders::BlendMode, Color},
+    color::blenders::BlendMode,
     obj::load_objs,
     vertex::shader::{create_model_matrix, ShaderType},
     Entity, EntityOptimizations,

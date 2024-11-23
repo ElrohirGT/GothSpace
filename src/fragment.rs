@@ -4,7 +4,7 @@ pub mod shaders;
 pub mod ship;
 pub mod skybox;
 
-use crate::{color::Color, texture::Textures, vertex::Vertex};
+use crate::{color::Color, vertex::Vertex};
 use nalgebra_glm::{dot, vec2, vec3_to_vec2, Vec2, Vec3};
 
 pub struct Fragment {

@@ -102,15 +102,15 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
     // let transformed_normal = vertex.normal;
     // println!("{normal_matrix:?} -> {transformed_normal:?}");
 
-    let vertex = Vertex {
+    
+
+    Vertex {
         position: transformed_position,
         normal: transformed_normal,
         tex_coords: vertex.tex_coords,
         color: vertex.color,
         frustum_position: ndc_position,
-    };
-
-    vertex
+    }
 }
 
 pub fn create_model_matrix(translation: Vec3, scale: f32, rotation: Vec3) -> Mat4 {
