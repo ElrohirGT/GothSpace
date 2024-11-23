@@ -1,21 +1,19 @@
 use fastnoise_lite::FastNoiseLite;
 use gothspace::camera::Camera;
-use gothspace::color::Color;
 use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
 use gothspace::fragment::ship::create_ship;
-use gothspace::obj::load_objs;
 use gothspace::render::render;
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };
-use gothspace::{framebuffer, Entity};
+use gothspace::framebuffer;
 use gothspace::{Message, Model};
 use minifb::{Key, KeyRepeat, Window, WindowOptions};
 use mouse_rs::Mouse;
-use nalgebra_glm::{vec3, Vec3};
+use nalgebra_glm::Vec3;
 use std::collections::VecDeque;
 use std::f32::consts::PI;
 use std::time::{Duration, Instant};

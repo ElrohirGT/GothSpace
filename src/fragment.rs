@@ -4,7 +4,7 @@ pub mod shaders;
 pub mod ship;
 
 use crate::{color::Color, vertex::Vertex};
-use nalgebra_glm::{dot, vec2, vec3, vec3_to_vec2, Vec2, Vec3};
+use nalgebra_glm::{dot, vec2, vec3_to_vec2, Vec2, Vec3};
 
 pub struct Fragment {
     pub position: Vec2,

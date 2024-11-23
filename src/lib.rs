@@ -10,8 +10,7 @@ pub mod vertex;
 
 use camera::Camera;
 use color::{blenders::BlendMode, Color};
-use fastnoise_lite::FastNoiseLite;
-use nalgebra_glm::{Mat4, Vec2, Vec3};
+use nalgebra_glm::{Mat4, Vec2};
 use obj::Obj;
 use vertex::shader::{ShaderType, Uniforms};
 

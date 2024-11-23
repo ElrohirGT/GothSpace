@@ -1,9 +1,9 @@
 use std::f32::consts::PI;
 
 use fastnoise_lite::{CellularDistanceFunction, CellularReturnType, FastNoiseLite, FractalType};
-use nalgebra_glm::{vec2, vec3, vec4, Mat4, Vec3};
+use nalgebra_glm::{vec3, vec4, Mat4, Vec3};
 
-use crate::{clamp_with_universe, color::Color, fragment::Fragment, vertex::Vertex, EntityShader};
+use crate::vertex::Vertex;
 
 pub enum ShaderType {
     Stripe {
