@@ -14,11 +14,18 @@ use crate::{
 
 pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoiseLite) {
     let Model {
-        render_entities,
+        entities,
         uniforms,
         camera,
+        ship,
         ..
     } = data;
+
+    let mut render_entities = Vec::with_capacity(1+ entities.len());
+    render_entities.push(ship);
+    for e in entities.iter() {
+        render_entities.push(e);
+    }
 
     for entity in render_entities {
         let Entity {
@@ -26,7 +33,8 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             shaders,
             model_matrix,
             optimize,
-            use_normal
+            use_normal,
+            ..
         } = entity;
 
         for vertex_array in objs {
@@ -94,7 +102,11 @@ fn assembly(vertices: &[Vertex]) -> Vec<&[Vertex]> {
     // triangles
 }
 
-fn rasterize(triangles: Vec<&[Vertex]>, camera_direction: Option<&Vec3>, use_normal: bool) -> Vec<Fragment> {
+fn rasterize(
+    triangles: Vec<&[Vertex]>,
+    camera_direction: Option<&Vec3>,
+    use_normal: bool,
+) -> Vec<Fragment> {
     triangles
         .iter()
         .flat_map(|tri| triangle(&tri[0], &tri[1], &tri[2], camera_direction, use_normal))

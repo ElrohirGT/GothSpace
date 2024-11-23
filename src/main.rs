@@ -4,12 +4,12 @@ use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
-use gothspace::fragment::ship::create_ship;
-use gothspace::framebuffer;
+use gothspace::fragment::ship::{create_ship, rotation_from_camera, translation_from_camera};
 use gothspace::render::render;
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };
+use gothspace::{framebuffer, EntityModel};
 use gothspace::{Message, Model};
 use minifb::{Key, KeyRepeat, Window, WindowOptions};
 use mouse_rs::types::Point;
@@ -20,8 +20,8 @@ use std::f32::consts::PI;
 use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 1.0;
-const ROTATION_SPEED: f32 = PI / 20.0;
-const PLAYER_SPEED: f32 = 1.0;
+const ROTATION_SPEED: f32 = PI / 60.0;
+const PLAYER_SPEED: f32 = 0.2;
 
 fn main() {
     let window_width = 800;
@@ -51,13 +51,25 @@ fn main() {
 
     let (wx, wy) = window.get_position();
     let mouse = Mouse::new();
-    let mut previous_mouse_pos: Point = Point {
-        x: wx as i32 + window_width as i32 / 2,
-        y: wy as i32 + window_height as i32 / 2,
-    };
+    let mut previous_mouse_pos = center_of_screen(
+        wx as i32,
+        wy as i32,
+        window_width as i32,
+        window_height as i32,
+    );
     mouse
         .move_to(previous_mouse_pos.x, previous_mouse_pos.y)
         .unwrap();
+
+    let window_maxs = Point {
+        x: wx as i32 + window_width as i32,
+        y: wy as i32 + window_height as i32,
+    };
+
+    let window_mins = Point {
+        x: wx as i32,
+        y: wy as i32,
+    };
 
     let target_framerate = 60;
     let frame_delay = Duration::from_millis(1000 / target_framerate);
@@ -135,6 +147,30 @@ fn main() {
         ));
         previous_mouse_pos = Point { x, y };
 
+        if previous_mouse_pos.x < window_mins.x || previous_mouse_pos.x > window_maxs.x {
+            previous_mouse_pos = center_of_screen(
+                wx as i32,
+                wy as i32,
+                window_width as i32,
+                window_height as i32,
+            );
+            mouse
+                .move_to(previous_mouse_pos.x, previous_mouse_pos.y)
+                .unwrap();
+        }
+
+        if previous_mouse_pos.y < window_mins.y || previous_mouse_pos.y > window_maxs.y {
+            previous_mouse_pos = center_of_screen(
+                wx as i32,
+                wy as i32,
+                window_width as i32,
+                window_height as i32,
+            );
+            mouse
+                .move_to(previous_mouse_pos.x, previous_mouse_pos.y)
+                .unwrap();
+        }
+
         for msg in messages {
             data = update(data, msg);
         }
@@ -170,17 +206,15 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let (framebuffer_width, framebuffer_height) = framebuffer_dimensions;
     let (window_width, window_height) = window_dimensions;
 
-    let ship = create_ship();
-
-    let render_entities = vec![ship];
-    // let render_entities = vec![];
-    let entities = vec![];
-
     let camera = Camera::new(
         Vec3::new(0.0, 0.0, 5.0),
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
     );
+    let ship = create_ship(&camera);
+    let planet = create_green_planet();
+    let entities = vec![planet];
+    // let entities = vec![];
 
     let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
     println!("View Matrix: {:#?}", view_matrix);
@@ -192,7 +226,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
 
     Model {
         entities,
-        render_entities,
+        ship,
         uniforms: Uniforms {
             view_matrix,
             projection_matrix,
@@ -209,17 +243,26 @@ fn update(data: Model, msg: Message) -> Model {
             let Model {
                 mut camera,
                 uniforms,
+                mut ship,
                 ..
             } = data;
 
             let dir = vec3(delta_yaw, delta_pitch, 1.0).normalize();
             camera.move_center(dir, ROTATION_SPEED);
+
             let uniforms = Uniforms {
                 view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
                 ..uniforms
             };
 
+            ship.modify_model(EntityModel {
+                translation: translation_from_camera(&camera),
+                rotation: rotation_from_camera(&camera),
+                ..ship.model
+            });
+
             Model {
+                ship,
                 uniforms,
                 camera,
                 ..data
@@ -273,12 +316,16 @@ fn update(data: Model, msg: Message) -> Model {
             Model { uniforms, ..data }
         }
         Message::ChangePlanet(entity) => {
-            let render_entities = vec![entity];
+            let entities = vec![entity];
 
-            Model {
-                render_entities,
-                ..data
-            }
+            Model { entities, ..data }
         }
+    }
+}
+
+fn center_of_screen(wx: i32, wy: i32, window_width: i32, window_height: i32) -> Point {
+    Point {
+        x: wx + window_width / 2,
+        y: wy + window_height / 2,
     }
 }

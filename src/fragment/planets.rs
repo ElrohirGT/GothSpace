@@ -4,11 +4,20 @@ use crate::{
     color::{blenders::BlendMode, Color},
     obj::load_objs,
     vertex::shader::{create_model_matrix, CellularConfig, FractalConfig, ShaderType},
-    Entity,
+    Entity, EntityModel,
 };
 
 pub fn create_default_planet_model_matrix() -> Mat4 {
-    create_model_matrix(Vec3::zeros(), 1.0, Vec3::zeros())
+    let model = create_default_planet_model();
+    create_model_matrix(model.translation, model.scale, model.rotation)
+}
+
+pub fn create_default_planet_model() -> EntityModel {
+    EntityModel {
+        rotation: Vec3::zeros(),
+        translation: Vec3::zeros(),
+        scale: 1.0,
+    }
 }
 
 pub fn create_disco_planet() -> Entity {
@@ -34,6 +43,7 @@ pub fn create_disco_planet() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         objs: planet_obj,
         use_normal: true,
         model_matrix: create_default_planet_model_matrix(),
@@ -72,6 +82,7 @@ pub fn create_ocean_planet() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
@@ -92,6 +103,7 @@ pub fn create_gas_giant() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
@@ -132,6 +144,7 @@ pub fn create_face_planet() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
@@ -162,6 +175,7 @@ pub fn create_snow_planet() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
@@ -202,6 +216,7 @@ pub fn create_sun() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
         model_matrix: create_default_planet_model_matrix(),
@@ -211,7 +226,7 @@ pub fn create_sun() -> Entity {
 }
 
 pub fn create_green_planet() -> Entity {
-    let planet_obj = load_objs("model.obj").unwrap();
+    let planet_obj = load_objs("sphere.obj").unwrap();
     let shaders = vec![
         (
             ShaderType::BaseColor,
@@ -253,6 +268,7 @@ pub fn create_green_planet() -> Entity {
     ];
 
     Entity {
+        model: create_default_planet_model(),
         objs: planet_obj,
         use_normal: true,
         model_matrix: create_default_planet_model_matrix(),
