@@ -4,7 +4,7 @@ use nalgebra_glm::{vec3, Vec3};
 
 use crate::{
     camera::Camera,
-    color::blenders::BlendMode,
+    color::{blenders::BlendMode, Color},
     obj::load_objs,
     vertex::shader::{create_model_matrix, ShaderType},
     Entity, EntityOptimizations,
@@ -16,11 +16,11 @@ pub fn create_ship(camera: &Camera) -> Entity {
     let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
 
     let shaders = vec![
-        // (
-        //     ShaderType::BaseColor,
-        //     vec![Color::new(100, 100, 100)],
-        //     BlendMode::Replace,
-        // ),
+        (
+            ShaderType::BaseColor,
+            vec![Color::new(0, 0, 255)],
+            BlendMode::Replace,
+        ),
         (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 

@@ -115,6 +115,7 @@ pub fn triangle(
             let point = vec2(x as f32 + 0.5, y as f32 + 0.5);
             let (w1, w2, w3) = barycentric_coordinates(&point, &a, &b, &c, triangle_area);
 
+            // If the point is inside the triangle...
             if (0.0..=1.0).contains(&w1) && (0.0..=1.0).contains(&w2) && (0.0..=1.0).contains(&w3) {
                 // Interpolated normal...
                 let normal = w1 * v1.normal + w2 * v2.normal + w3 * v3.normal;
@@ -127,7 +128,17 @@ pub fn triangle(
                     }
                 }
 
-                let position = if use_normal { normal } else { a };
+                // Interpolated depth...
+                let depth = w1 * v1.position.z + w2 * v2.position.z + w3 * v3.position.z;
+
+                // FIXME: For now the normal is fine, but this should ideally be
+                // a position using barycentrics
+                // Interpolated position...
+                let position = if use_normal {
+                    normal
+                } else {
+                    w1 * v1.position + w2 * v2.position + w3 * v3.position
+                };
                 let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
 
                 let mut intensity = 0.0;
@@ -138,19 +149,6 @@ pub fn triangle(
 
                 intensity = intensity.clamp(0.0, 1.0);
 
-                // if intensity <= 0.0 {
-                //     println!("The intensity is {intensity}! {light_dir:?} dot {normal:?}");
-                // }
-
-                // Interpolated depth...
-                let depth = w1 * a.z + w2 * b.z + w3 * c.z;
-
-                // Interpolated position...
-                // FIXME: For now the normal is fine, but this should ideally be
-                // a position using barycentrics
-
-                // let position = a;
-                // let position = w1 * a + w2 * b + w3 * c;
                 fragments.push(Fragment::new_with_intensity(
                     point, base_color, depth, position, intensity, tex_cords,
                 ));

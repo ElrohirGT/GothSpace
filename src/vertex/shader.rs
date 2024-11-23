@@ -99,10 +99,6 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
         transformed_normal.y / w,
         transformed_normal.z / w,
     );
-    // let transformed_normal = vertex.normal;
-    // println!("{normal_matrix:?} -> {transformed_normal:?}");
-
-    
 
     Vertex {
         position: transformed_position,
