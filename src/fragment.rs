@@ -1,6 +1,7 @@
 pub mod material;
 pub mod planets;
 pub mod shaders;
+pub mod ship;
 
 use crate::{color::Color, vertex::Vertex};
 use nalgebra_glm::{dot, vec2, vec3, vec3_to_vec2, Vec2, Vec3};
