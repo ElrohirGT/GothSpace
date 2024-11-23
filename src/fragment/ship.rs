@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use nalgebra_glm::{rotate_vec3, vec3, Vec3};
+use nalgebra_glm::{vec3, Vec3};
 
 use crate::{
     camera::Camera,

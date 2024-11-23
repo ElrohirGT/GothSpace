@@ -2,7 +2,7 @@ pub mod shader;
 
 use crate::{
     color::Color,
-    texture::{self, Textures},
+    texture::{Textures},
 };
 use nalgebra_glm::{Vec2, Vec3};
 
