@@ -6,7 +6,7 @@ use nalgebra_glm::vec2;
 use crate::{
     clamp_with_universe,
     color::Color,
-    texture::GameTextures,
+    texture::{GameTextures, Textures},
     vertex::shader::{CellularConfig, FractalConfig, ShaderType, Uniforms},
     EntityShader,
 };
@@ -18,6 +18,7 @@ pub fn fragment_shader(
     inputs: &[EntityShader],
     uniforms: &Uniforms,
     noise: &mut FastNoiseLite,
+    textures: &GameTextures,
 ) -> Fragment {
     let color = inputs.iter().fold(fragment.color, |acc, current| {
         let color = match current.0 {
@@ -52,6 +53,7 @@ pub fn fragment_shader(
             } => cellular_shader(
                 &fragment, uniforms, &current.1, speed, zoom, &fractal, &cellular, noise,
             ),
+            ShaderType::Texture { texture } => texture_shader(&fragment, textures, texture),
         };
 
         acc.blend(&color, &current.2)
@@ -60,13 +62,9 @@ pub fn fragment_shader(
     Fragment { color, ..fragment }
 }
 
-fn texture_shader(fragment: &Fragment, textures: &GameTextures) -> Color {
-    if let Some(tex_id) = fragment.texture {
-        let texture = textures.get_texture(tex_id);
-        texture.get_pixel_color(fragment.texture_position.x, fragment.texture_position.y)
-    } else {
-        Color::black()
-    }
+fn texture_shader(fragment: &Fragment, textures: &GameTextures, texture: Textures) -> Color {
+    let texture = textures.get_texture(texture);
+    texture.get_pixel_color(fragment.texture_position.x, fragment.texture_position.y)
 }
 
 fn fbm_shader(

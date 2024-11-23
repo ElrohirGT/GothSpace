@@ -13,7 +13,6 @@ pub struct Fragment {
     pub depth: f32,
     pub vertex_position: Vec3,
     pub texture_position: Vec2,
-    pub texture: Option<Textures>,
 }
 
 impl Fragment {
@@ -25,7 +24,6 @@ impl Fragment {
             vertex_position,
             intensity: 1.0,
             texture_position: Vec2::zeros(),
-            texture: None,
         }
     }
 
@@ -36,7 +34,6 @@ impl Fragment {
         vertex_position: Vec3,
         intensity: f32,
         texture_position: Vec2,
-        texture: Option<Textures>,
     ) -> Self {
         Fragment {
             position,
@@ -45,7 +42,6 @@ impl Fragment {
             depth,
             vertex_position,
             texture_position,
-            texture,
         }
     }
 
@@ -149,7 +145,7 @@ pub fn triangle(
                     // let position = a;
                     // let position = w1 * a + w2 * b + w3 * c;
                     Some(Fragment::new_with_intensity(
-                        point, base_color, depth, position, intensity, tex_cords, v1.texture,
+                        point, base_color, depth, position, intensity, tex_cords,
                     ))
                 } else {
                     None

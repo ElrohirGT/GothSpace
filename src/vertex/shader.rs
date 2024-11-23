@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use fastnoise_lite::{CellularDistanceFunction, CellularReturnType, FastNoiseLite, FractalType};
 use nalgebra_glm::{vec3, vec4, Mat4, Vec3};
 
-use crate::vertex::Vertex;
+use crate::{texture::Textures, vertex::Vertex};
 
 pub enum ShaderType {
     Stripe {
@@ -32,6 +32,9 @@ pub enum ShaderType {
         speed: f32,
         fractal: FractalConfig,
         cellular: CellularConfig,
+    },
+    Texture {
+        texture: Textures,
     },
 }
 
@@ -101,7 +104,6 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
     // println!("{normal_matrix:?} -> {transformed_normal:?}");
 
     Vertex {
-        texture: vertex.texture,
         position: transformed_position,
         normal: transformed_normal,
         tex_coords: vertex.tex_coords,

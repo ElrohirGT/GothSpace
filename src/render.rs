@@ -18,6 +18,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
         uniforms,
         camera,
         ship,
+        textures,
         ..
     } = data;
 
@@ -68,7 +69,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             // println!("Applying fragment shaders...");
             let fragments = fragments
                 .into_iter()
-                .map(|f| fragment_shader(f, shaders, uniforms, noise))
+                .map(|f| fragment_shader(f, shaders, uniforms, noise, textures))
                 .collect();
             // println!("Fragment shaders applied!");
 

@@ -29,7 +29,6 @@ pub fn create_ship(camera: &Camera) -> Entity {
     let translation = translation_from_camera(camera);
 
     Entity {
-        texture: None,
         objs: ship_obj,
         use_normal: false,
         shaders,

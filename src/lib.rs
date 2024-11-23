@@ -51,7 +51,6 @@ pub struct Entity {
     /// Whether or not to use vertex_normal instead of vertex_position
     pub use_normal: bool,
     pub model: EntityModel,
-    pub texture: Option<Texture>,
 }
 
 impl Entity {
