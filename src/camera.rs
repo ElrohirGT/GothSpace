@@ -89,11 +89,11 @@ impl Camera {
     }
 
     /// Zooms in and zooms out the camera by a given delta.
-    pub fn zoom(&mut self, delta: f32) {
-        self.has_changed = true;
-        let forward_dir = (self.center - self.eye).normalize();
-        self.eye += forward_dir * delta;
-    }
+    // pub fn zoom(&mut self, delta: f32) {
+    //     self.has_changed = true;
+    //     let forward_dir = (self.center - self.eye).normalize();
+    //     self.eye += forward_dir * delta;
+    // }
 
     /// Rotates the Camera in place, by a given delta_yaw and pitch
     ///

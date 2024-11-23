@@ -109,9 +109,6 @@ fn main() {
                 Key::W => Some(Message::Advance(PLAYER_SPEED)),
                 Key::S => Some(Message::Advance(-PLAYER_SPEED)),
 
-                Key::Up => Some(Message::ZoomCamera(ZOOM_SPEED)),
-                Key::Down => Some(Message::ZoomCamera(-ZOOM_SPEED)),
-
                 Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
                 Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
                 Key::Key3 => Some(Message::ChangePlanet(create_gas_giant())),
@@ -256,8 +253,8 @@ fn update(data: Model, msg: Message) -> Model {
             };
 
             ship.modify_model(EntityModel {
-                translation: translation_from_camera(&camera),
                 rotation: rotation_from_camera(&camera),
+                translation: translation_from_camera(&camera),
                 ..ship.model
             });
 
@@ -273,6 +270,7 @@ fn update(data: Model, msg: Message) -> Model {
             let Model {
                 mut camera,
                 uniforms,
+                mut ship,
                 ..
             } = data;
 
@@ -282,32 +280,19 @@ fn update(data: Model, msg: Message) -> Model {
                 ..uniforms
             };
 
+            ship.modify_model(EntityModel {
+                translation: translation_from_camera(&camera),
+                ..ship.model
+            });
+
             Model {
                 uniforms,
+                ship,
                 camera,
                 ..data
             }
         }
 
-        Message::ZoomCamera(delta_zoom) => {
-            let Model {
-                mut camera,
-                uniforms,
-                ..
-            } = data;
-
-            camera.zoom(delta_zoom);
-            let uniforms = Uniforms {
-                view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
-                ..uniforms
-            };
-
-            Model {
-                uniforms,
-                camera,
-                ..data
-            }
-        }
         Message::UpdateTime(time) => {
             let Model { uniforms, .. } = data;
 
