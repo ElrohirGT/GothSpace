@@ -6,12 +6,14 @@ pub mod framebuffer;
 pub mod light;
 pub mod obj;
 pub mod render;
+pub mod texture;
 pub mod vertex;
 
 use camera::Camera;
 use color::{blenders::BlendMode, Color};
 use nalgebra_glm::{Mat4, Vec2, Vec3};
 use obj::Obj;
+use texture::{GameTextures, Texture};
 use vertex::shader::{create_model_matrix, ShaderType, Uniforms};
 
 pub fn equal(a: f32, b: f32, eps: f32) -> bool {
@@ -49,6 +51,7 @@ pub struct Entity {
     /// Whether or not to use vertex_normal instead of vertex_position
     pub use_normal: bool,
     pub model: EntityModel,
+    pub texture: Option<Texture>,
 }
 
 impl Entity {
@@ -65,4 +68,5 @@ pub struct Model {
     pub ship: Entity,
     pub uniforms: Uniforms,
     pub camera: Camera,
+    pub textures: GameTextures,
 }

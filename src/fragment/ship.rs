@@ -1,4 +1,3 @@
-use core::f32;
 use std::f32::consts::PI;
 
 use nalgebra_glm::{rotate_vec3, vec3, Vec3};
@@ -30,6 +29,7 @@ pub fn create_ship(camera: &Camera) -> Entity {
     let translation = translation_from_camera(camera);
 
     Entity {
+        texture: None,
         objs: ship_obj,
         use_normal: false,
         shaders,

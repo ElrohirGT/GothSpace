@@ -6,6 +6,7 @@ use gothspace::fragment::planets::{
 };
 use gothspace::fragment::ship::{create_ship, translation_from_camera};
 use gothspace::render::render;
+use gothspace::texture::GameTextures;
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };
@@ -221,7 +222,9 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         create_viewport_matrix(framebuffer_width as f32, framebuffer_height as f32);
     println!("Viewport matrix: {:#?}", viewport_matrix);
 
+    let textures = GameTextures::new("assets/textures/");
     Model {
+        textures,
         entities,
         ship,
         uniforms: Uniforms {

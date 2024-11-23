@@ -3,7 +3,7 @@ pub mod planets;
 pub mod shaders;
 pub mod ship;
 
-use crate::{color::Color, vertex::Vertex};
+use crate::{color::Color, texture::Textures, vertex::Vertex};
 use nalgebra_glm::{dot, vec2, vec3_to_vec2, Vec2, Vec3};
 
 pub struct Fragment {
@@ -12,6 +12,8 @@ pub struct Fragment {
     pub intensity: f32,
     pub depth: f32,
     pub vertex_position: Vec3,
+    pub texture_position: Vec2,
+    pub texture: Option<Textures>,
 }
 
 impl Fragment {
@@ -22,6 +24,8 @@ impl Fragment {
             depth,
             vertex_position,
             intensity: 1.0,
+            texture_position: Vec2::zeros(),
+            texture: None,
         }
     }
 
@@ -31,6 +35,8 @@ impl Fragment {
         depth: f32,
         vertex_position: Vec3,
         intensity: f32,
+        texture_position: Vec2,
+        texture: Option<Textures>,
     ) -> Self {
         Fragment {
             position,
@@ -38,6 +44,8 @@ impl Fragment {
             intensity,
             depth,
             vertex_position,
+            texture_position,
+            texture,
         }
     }
 
@@ -136,10 +144,12 @@ pub fn triangle(
                     // FIXME: For now the normal is fine, but this should ideally be
                     // a position using barycentrics
                     let position = if use_normal { normal } else { a };
+                    let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
+
                     // let position = a;
                     // let position = w1 * a + w2 * b + w3 * c;
                     Some(Fragment::new_with_intensity(
-                        point, base_color, depth, position, intensity,
+                        point, base_color, depth, position, intensity, tex_cords, v1.texture,
                     ))
                 } else {
                     None

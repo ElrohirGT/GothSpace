@@ -43,6 +43,7 @@ pub fn create_disco_planet() -> Entity {
     ];
 
     Entity {
+        texture: None,
         model: create_default_planet_model(),
         objs: planet_obj,
         use_normal: true,
@@ -82,6 +83,7 @@ pub fn create_ocean_planet() -> Entity {
     ];
 
     Entity {
+        texture: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -103,6 +105,7 @@ pub fn create_gas_giant() -> Entity {
     ];
 
     Entity {
+        texture: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -144,6 +147,7 @@ pub fn create_face_planet() -> Entity {
     ];
 
     Entity {
+        texture: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -175,6 +179,7 @@ pub fn create_snow_planet() -> Entity {
     ];
 
     Entity {
+        texture: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -216,6 +221,7 @@ pub fn create_sun() -> Entity {
     ];
 
     Entity {
+        texture: None,
         model: create_default_planet_model(),
         use_normal: true,
         objs: planet_obj,
@@ -269,6 +275,7 @@ pub fn create_green_planet() -> Entity {
 
     Entity {
         model: create_default_planet_model(),
+        texture: None,
         objs: planet_obj,
         use_normal: true,
         model_matrix: create_default_planet_model_matrix(),

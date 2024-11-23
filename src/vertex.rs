@@ -1,6 +1,9 @@
 pub mod shader;
 
-use crate::color::Color;
+use crate::{
+    color::Color,
+    texture::{self, Textures},
+};
 use nalgebra_glm::{Vec2, Vec3};
 
 #[derive(Clone, Debug)]
@@ -9,6 +12,7 @@ pub struct Vertex {
     pub normal: Vec3,
     pub tex_coords: Vec2,
     pub color: Color,
+    pub texture: Option<Textures>,
 }
 
 impl Vertex {
@@ -18,6 +22,7 @@ impl Vertex {
             normal,
             tex_coords,
             color: Color::black(),
+            texture: None,
         }
     }
 
@@ -27,6 +32,17 @@ impl Vertex {
             normal: Vec3::new(0.0, 0.0, 0.0),
             tex_coords: Vec2::new(0.0, 0.0),
             color,
+            texture: None,
+        }
+    }
+
+    pub fn new_with_texture(position: Vec3, texture: Textures) -> Self {
+        Vertex {
+            position,
+            normal: Vec3::new(0.0, 0.0, 0.0),
+            tex_coords: Vec2::new(0.0, 0.0),
+            color: Color::black(),
+            texture: Some(texture),
         }
     }
 
@@ -43,6 +59,7 @@ impl Default for Vertex {
             normal: Vec3::new(0.0, 1.0, 0.0),
             tex_coords: Vec2::new(0.0, 0.0),
             color: Color::black(),
+            texture: None,
         }
     }
 }

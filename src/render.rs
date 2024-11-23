@@ -21,7 +21,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
         ..
     } = data;
 
-    let mut render_entities = Vec::with_capacity(1+ entities.len());
+    let mut render_entities = Vec::with_capacity(1 + entities.len());
     render_entities.push(ship);
     for e in entities.iter() {
         render_entities.push(e);

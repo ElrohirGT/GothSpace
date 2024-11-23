@@ -101,6 +101,7 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
     // println!("{normal_matrix:?} -> {transformed_normal:?}");
 
     Vertex {
+        texture: vertex.texture,
         position: transformed_position,
         normal: transformed_normal,
         tex_coords: vertex.tex_coords,
