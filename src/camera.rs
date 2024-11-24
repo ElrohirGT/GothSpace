@@ -2,6 +2,7 @@ use std::{f32::consts::PI, ops::Neg};
 
 use nalgebra_glm::{rotate_vec3, Vec3};
 
+#[derive(Debug, Clone, Copy)]
 pub struct Camera {
     /// Determines whether or not the camera has changed.
     has_changed: bool,

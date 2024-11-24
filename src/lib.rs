@@ -36,6 +36,7 @@ pub enum Message {
     UpdateTime(f32),
     Advance(f32),
     ResizeWindow((usize, usize)),
+    AlternateView,
 }
 
 pub type EntityShader = (ShaderType, Vec<Color>, BlendMode);
@@ -77,7 +78,13 @@ impl Entity {
     }
 }
 
+pub enum ViewType {
+    BirdEye,
+    FirstPerson,
+}
+
 pub struct Model {
+    pub view_type: ViewType,
     pub entities: Vec<Entity>,
     pub ship: Entity,
     pub uniforms: Uniforms,
@@ -85,4 +92,5 @@ pub struct Model {
     pub textures: GameTextures,
     pub lights: Vec<Light>,
     pub skybox: Skybox,
+    pub previous_fpv_state: (Entity, Camera),
 }

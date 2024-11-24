@@ -96,7 +96,7 @@ impl Skybox {
 
                 let x = x as f32;
                 let y = y as f32;
-                let depth = -1000.0;
+                let depth = -1e6;
                 let _ = match star.size {
                     1 => framebuffer.paint_point(vec2(x, y), depth),
                     2 => framebuffer

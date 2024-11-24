@@ -6,7 +6,9 @@ use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
-use gothspace::fragment::ship::{create_ship, translation_from_camera, ORIGINAL_ROTATION};
+use gothspace::fragment::ship::{
+    create_ship, create_ship_from, translation_from_camera, ORIGINAL_ROTATION,
+};
 use gothspace::light::Light;
 use gothspace::render::render;
 use gothspace::skybox::Skybox;
@@ -118,6 +120,15 @@ fn main() {
                 Key::W => Some(Message::Advance(PLAYER_SPEED)),
                 Key::S => Some(Message::Advance(-PLAYER_SPEED)),
 
+                Key::Tab => {
+                    if mode_cooldown_timer == 0 {
+                        mode_cooldown_timer = mode_cooldown;
+                        Some(Message::AlternateView)
+                    } else {
+                        None
+                    }
+                }
+
                 // Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
                 // Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
                 // Key::Key3 => Some(Message::ChangePlanet(create_gas_giant())),
@@ -145,6 +156,7 @@ fn main() {
             .collect();
         should_update = true;
         messages.push(Message::UpdateTime(time));
+        mode_cooldown_timer = (mode_cooldown_timer - 1).max(0);
 
         let Point { x, y } = mouse.get_position().unwrap();
         messages.push(Message::RotateCamera(
@@ -252,8 +264,10 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let textures = GameTextures::new("assets/textures/");
 
     Model {
+        view_type: gothspace::ViewType::FirstPerson,
         textures,
         entities,
+        previous_fpv_state: (create_ship_from(&ship), camera.clone()),
         ship,
         uniforms: Uniforms {
             view_matrix,
@@ -365,6 +379,46 @@ fn update(data: Model, msg: Message) -> Model {
             };
 
             Model { uniforms, ..data }
+        }
+
+        Message::AlternateView => {
+            let Model {
+                ship,
+                mut camera,
+                view_type,
+                previous_fpv_state,
+                ..
+            } = data;
+
+            match view_type {
+                gothspace::ViewType::BirdEye => {
+                    let ship = create_ship_from(&previous_fpv_state.0);
+                    let camera = previous_fpv_state.1;
+
+                    Model {
+                        ship,
+                        camera,
+                        previous_fpv_state,
+                        view_type: gothspace::ViewType::FirstPerson,
+                        ..data
+                    }
+                }
+                gothspace::ViewType::FirstPerson => {
+                    // Saving view state to know when to return...
+                    let previous_fpv_state = (create_ship_from(&ship), camera);
+
+                    camera.eye = vec3(0.0, 100.0, 0.0);
+                    camera.center = Vec3::zeros();
+
+                    Model {
+                        ship,
+                        camera,
+                        previous_fpv_state,
+                        view_type: gothspace::ViewType::BirdEye,
+                        ..data
+                    }
+                }
+            }
         }
     }
 }

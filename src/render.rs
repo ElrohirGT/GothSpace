@@ -24,13 +24,17 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
         textures,
         lights,
         skybox,
+        view_type,
         ..
     } = data;
 
     skybox.render(framebuffer, uniforms, &camera.eye);
 
     let mut render_entities = Vec::with_capacity(1 + entities.len());
-    render_entities.push(ship);
+    if matches!(view_type, crate::ViewType::FirstPerson) {
+        render_entities.push(ship);
+    }
+
     for e in entities.iter() {
         render_entities.push(e);
     }
