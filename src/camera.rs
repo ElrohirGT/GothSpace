@@ -1,4 +1,4 @@
-use std::f32::consts::PI;
+use std::{f32::consts::PI, ops::Neg};
 
 use nalgebra_glm::{rotate_vec3, Vec3};
 
@@ -14,6 +14,12 @@ pub struct Camera {
 
     /// What's the up vector of the camera.
     pub up: Vec3,
+
+    /// The max zoom in of the camera.
+    pub max_zoom: f32,
+
+    /// The amount of cumulative zoom deltas it currently has.
+    accum_zoom: f32,
 }
 
 impl Camera {
@@ -22,12 +28,15 @@ impl Camera {
     /// * `eye`: Camera position in the world space.
     /// * `center`: Point the camera is looking at.
     /// * `up`: What's the up vector of the camera.
-    pub fn new(eye: Vec3, center: Vec3, up: Vec3) -> Self {
+    /// * `max_zoom`: The max zoom deltas can sum up to.
+    pub fn new(eye: Vec3, center: Vec3, up: Vec3, max_zoom: f32) -> Self {
         Camera {
             eye,
             center,
             up,
             has_changed: true,
+            accum_zoom: 0.0,
+            max_zoom,
         }
     }
 
@@ -89,11 +98,31 @@ impl Camera {
     }
 
     /// Zooms in and zooms out the camera by a given delta.
-    // pub fn zoom(&mut self, delta: f32) {
-    //     self.has_changed = true;
-    //     let forward_dir = (self.center - self.eye).normalize();
-    //     self.eye += forward_dir * delta;
-    // }
+    pub fn zoom(&mut self, delta: f32) {
+        let Camera {
+            has_changed,
+            max_zoom,
+            accum_zoom,
+            ..
+        } = self;
+        *has_changed = true;
+
+        *accum_zoom += delta;
+        let delta = match (accum_zoom < &mut max_zoom.neg(), accum_zoom > max_zoom) {
+            (true, _) => {
+                *accum_zoom = -*max_zoom;
+                0.0
+            }
+            (_, true) => {
+                *accum_zoom = *max_zoom;
+                0.0
+            }
+            (false, false) => delta,
+        };
+
+        let forward_dir = self.direction();
+        self.eye += forward_dir * delta;
+    }
 
     /// Rotates the Camera in place, by a given delta_yaw and pitch
     ///
@@ -139,6 +168,7 @@ impl Camera {
         self.center += delta_pos;
     }
 
+    /// Get's the direction of the camera, normalized.
     pub fn direction(&self) -> Vec3 {
         (self.center - self.eye).normalize()
     }

@@ -30,6 +30,7 @@ pub fn clamp_with_universe(original: Vec2, mapped: Vec2, value: f32) -> f32 {
 }
 
 pub enum Message {
+    ZoomCamera(f32),
     RotateCamera(f32, f32),
     UpdateTime(f32),
     ChangePlanet(Entity),

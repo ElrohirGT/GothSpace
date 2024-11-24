@@ -23,7 +23,7 @@ use std::collections::VecDeque;
 use std::f32::consts::PI;
 use std::time::{Duration, Instant};
 
-const ZOOM_SPEED: f32 = 1.0;
+const ZOOM_SPEED: f32 = 0.1;
 const ROTATION_SPEED: f32 = PI / 60.0;
 const PLAYER_SPEED: f32 = 0.2;
 
@@ -148,6 +148,10 @@ fn main() {
         ));
         previous_mouse_pos = Point { x, y };
 
+        if let Some(delta) = window.get_scroll_wheel().map(|(_, y)| y) {
+            messages.push(Message::ZoomCamera(delta * ZOOM_SPEED));
+        }
+
         if previous_mouse_pos.x < window_mins.x || previous_mouse_pos.x > window_maxs.x {
             previous_mouse_pos = center_of_screen(
                 wx as i32,
@@ -211,6 +215,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         Vec3::new(0.0, 0.0, 5.0),
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
+        2.0,
     );
     let ship = create_ship(&camera);
     let planet = create_green_planet();
@@ -318,10 +323,19 @@ fn update(data: Model, msg: Message) -> Model {
 
             Model { uniforms, ..data }
         }
+
         Message::ChangePlanet(entity) => {
             let entities = vec![entity];
 
             Model { entities, ..data }
+        }
+
+        Message::ZoomCamera(delta) => {
+            let Model { mut camera, .. } = data;
+
+            camera.zoom(delta);
+
+            Model { camera, ..data }
         }
     }
 }
