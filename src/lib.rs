@@ -57,8 +57,9 @@ pub struct Entity {
     pub shaders: Vec<EntityShader>,
     pub model_matrix: Mat4,
     pub optimizations: EntityOptimizations,
-    /// Whether or not to use vertex_normal instead of vertex_position
-    pub use_normal: bool,
+    /// If true, will use the screen position instead of the model position of each vertex for its
+    /// shaders.
+    pub use_screen_position: bool,
     pub model: EntityModel,
     /// Lower depth means it will be rendered on top other stuff
     pub custom_depth: Option<f32>,

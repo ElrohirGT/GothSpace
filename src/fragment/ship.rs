@@ -34,7 +34,7 @@ pub fn create_ship(camera: &Camera) -> Entity {
 
     Entity {
         objs: ship_obj,
-        use_normal: true,
+        use_screen_position: false,
         shaders,
         optimizations,
         model_matrix: create_model_matrix(translation, scale, rotation),

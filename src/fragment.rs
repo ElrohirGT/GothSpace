@@ -94,7 +94,7 @@ pub fn triangle(
     v2: &Vertex,
     v3: &Vertex,
     camera_direction: Option<&Vec3>,
-    use_normal: bool,
+    use_screen_position: &bool,
     lights: &[Light],
     custom_depth: Option<f32>,
 ) -> Vec<Fragment> {
@@ -124,8 +124,11 @@ pub fn triangle(
                 // FIXME: For now the normal is fine, but this should ideally be
                 // a position using barycentrics
                 // Interpolated position...
-                let position =
-                    w1 * v1.model_position + w2 * v2.model_position + w3 * v3.model_position;
+                let position = if *use_screen_position {
+                    v1.screen_position
+                } else {
+                    w1 * v1.model_position + w2 * v2.model_position + w3 * v3.model_position
+                };
 
                 // Interpolated texture coords...
                 let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;

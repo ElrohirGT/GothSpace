@@ -39,7 +39,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             shaders,
             model_matrix,
             optimizations,
-            use_normal,
+            use_screen_position,
             custom_depth,
             ..
         } = entity;
@@ -68,7 +68,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
                 } else {
                     None
                 },
-                *use_normal,
+                use_screen_position,
                 lights,
                 *custom_depth,
             );
@@ -127,7 +127,7 @@ fn assembly(vertices: &[Vertex], should_optimize: bool) -> Vec<&[Vertex]> {
 fn rasterize(
     triangles: Vec<&[Vertex]>,
     camera_direction: Option<&Vec3>,
-    use_normal: bool,
+    use_screen_position: &bool,
     lights: &[Light],
     custom_depth: Option<f32>,
 ) -> Vec<Fragment> {
@@ -139,7 +139,7 @@ fn rasterize(
                 &tri[1],
                 &tri[2],
                 camera_direction,
-                use_normal,
+                use_screen_position,
                 lights,
                 custom_depth,
             )
