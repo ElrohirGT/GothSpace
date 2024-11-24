@@ -36,7 +36,7 @@ fn main() {
     let window_width = 1080;
     let window_height = 720;
 
-    let framebuffer_width = 1080;
+    let framebuffer_width = 1500;
     let framebuffer_height =
         (window_height as f32 / window_width as f32) * framebuffer_width as f32;
     let framebuffer_height = framebuffer_height as usize;
@@ -244,7 +244,18 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     );
     let sun = create_sun(vec3(0.0, 0.0, 0.0));
     let green_planet = create_green_planet();
-    let entities = vec![sun, green_planet];
+    let disco_planet = create_disco_planet();
+    let gas_planet = create_gas_giant();
+    let face_planet = create_face_planet();
+    let snow_planet = create_snow_planet();
+    let entities = vec![
+        sun,
+        green_planet,
+        disco_planet,
+        gas_planet,
+        face_planet,
+        snow_planet,
+    ];
 
     let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
     println!("View Matrix: {:#?}", view_matrix);
@@ -407,7 +418,7 @@ fn update(data: Model, msg: Message) -> Model {
                     // Saving view state to know when to return...
                     let previous_fpv_state = (create_ship_from(&ship), camera);
 
-                    camera.eye = vec3(0.0, 100.0, 0.0);
+                    camera.eye = vec3(0.0, 130.0, 0.0);
                     camera.center = Vec3::zeros();
 
                     Model {

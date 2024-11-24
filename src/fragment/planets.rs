@@ -28,6 +28,9 @@ const OPTIMIZATIONS: EntityOptimizations = EntityOptimizations {
     frustum_cutting: true,
 };
 
+// const BASE_SLOWDOWN: f32 = 1e-2;
+const BASE_SLOWDOWN: f32 = 1e-4;
+
 pub fn create_disco_planet() -> Entity {
     let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
@@ -50,8 +53,16 @@ pub fn create_disco_planet() -> Entity {
         (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let ellipsis = Some(Ellipsis {
+        center: Vec3::zeros(),
+        a: 10.0,
+        b: 10.0,
+        y_max: 0.0,
+        velocity: BASE_SLOWDOWN,
+    });
+
     Entity {
-        ellipsis: None,
+        ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
         objs: planet_obj,
@@ -91,8 +102,16 @@ pub fn create_ocean_planet() -> Entity {
         (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let ellipsis = Some(Ellipsis {
+        center: Vec3::zeros(),
+        a: 5.0,
+        b: 60.0,
+        y_max: 100.0,
+        velocity: BASE_SLOWDOWN,
+    });
+
     Entity {
-        ellipsis: None,
+        ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -114,8 +133,16 @@ pub fn create_gas_giant() -> Entity {
         (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let ellipsis = Some(Ellipsis {
+        center: Vec3::zeros(),
+        a: 80.0,
+        b: 90.0,
+        y_max: 0.0,
+        velocity: BASE_SLOWDOWN,
+    });
+
     Entity {
-        ellipsis: None,
+        ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -157,8 +184,16 @@ pub fn create_face_planet() -> Entity {
         // (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let ellipsis = Some(Ellipsis {
+        center: Vec3::zeros(),
+        a: 45.0,
+        b: 60.0,
+        y_max: 40.0,
+        velocity: BASE_SLOWDOWN,
+    });
+
     Entity {
-        ellipsis: None,
+        ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -190,8 +225,16 @@ pub fn create_snow_planet() -> Entity {
         (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let ellipsis = Some(Ellipsis {
+        center: Vec3::zeros(),
+        a: 22.0,
+        b: 35.0,
+        y_max: 0.0,
+        velocity: BASE_SLOWDOWN,
+    });
+
     Entity {
-        ellipsis: None,
+        ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -295,8 +338,8 @@ pub fn create_green_planet() -> Entity {
         center: Vec3::zeros(),
         a: 50.0,
         b: 12.0,
-        y_max: 0.0,
-        velocity: 5e-4,
+        y_max: 12.0,
+        velocity: 5.0 * BASE_SLOWDOWN,
     });
 
     Entity {
