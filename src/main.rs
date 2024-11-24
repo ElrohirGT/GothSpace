@@ -231,7 +231,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         intensity: 1.0,
     }];
 
-    let skybox = Skybox::new(700, 100.0);
+    let skybox = Skybox::new(5000, 50.0);
 
     let textures = GameTextures::new("assets/textures/");
     Model {
