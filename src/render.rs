@@ -116,7 +116,7 @@ fn assembly(vertices: &[Vertex], should_optimize: bool) -> Vec<&[Vertex]> {
                     && range.contains(&c.frustum_position.y)
                     && range.contains(&c.frustum_position.z);
 
-                a_in_range && b_in_range && c_in_range
+                a_in_range || b_in_range || c_in_range
             })
             .collect()
     } else {
