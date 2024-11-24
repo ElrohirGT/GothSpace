@@ -230,8 +230,9 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         Vec3::new(0.0, 1.0, 0.0),
         2.0,
     );
-    let planet = create_green_planet();
-    let entities = vec![planet];
+    let sun = create_sun(vec3(0.0, 0.0, 0.0));
+    let green_planet = create_green_planet();
+    let entities = vec![sun, green_planet];
 
     let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
     println!("View Matrix: {:#?}", view_matrix);

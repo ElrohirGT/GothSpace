@@ -202,7 +202,7 @@ pub fn create_snow_planet() -> Entity {
     }
 }
 
-pub fn create_sun() -> Entity {
+pub fn create_sun(starting_position: Vec3) -> Entity {
     let planet_obj = load_objs(SPHERE_OBJ).unwrap();
     let shaders = vec![
         (
@@ -234,6 +234,7 @@ pub fn create_sun() -> Entity {
     ];
 
     let mut model = create_default_planet_model();
+    model.translation = starting_position;
     model.scale *= 4.0;
 
     Entity {
