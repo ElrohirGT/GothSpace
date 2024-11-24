@@ -34,7 +34,6 @@ pub enum Message {
     ZoomCamera(f32),
     RotateCamera(f32, f32),
     UpdateTime(f32),
-    ChangePlanet(Entity),
     Advance(f32),
     ResizeWindow((usize, usize)),
 }

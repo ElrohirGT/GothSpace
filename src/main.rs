@@ -118,13 +118,13 @@ fn main() {
                 Key::W => Some(Message::Advance(PLAYER_SPEED)),
                 Key::S => Some(Message::Advance(-PLAYER_SPEED)),
 
-                Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
-                Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
-                Key::Key3 => Some(Message::ChangePlanet(create_gas_giant())),
-                Key::Key4 => Some(Message::ChangePlanet(create_face_planet())),
-                Key::Key5 => Some(Message::ChangePlanet(create_snow_planet())),
-                Key::Key6 => Some(Message::ChangePlanet(create_sun())),
-                Key::Key7 => Some(Message::ChangePlanet(create_green_planet())),
+                // Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
+                // Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
+                // Key::Key3 => Some(Message::ChangePlanet(create_gas_giant())),
+                // Key::Key4 => Some(Message::ChangePlanet(create_face_planet())),
+                // Key::Key5 => Some(Message::ChangePlanet(create_snow_planet())),
+                // Key::Key6 => Some(Message::ChangePlanet(create_sun())),
+                // Key::Key7 => Some(Message::ChangePlanet(create_green_planet())),
 
                 // Key::Space => match (mode_cooldown_timer, &data.status) {
                 //     (0, GameStatus::MainMenu) => {
@@ -346,11 +346,6 @@ fn update(data: Model, msg: Message) -> Model {
                 entities,
                 ..data
             }
-        }
-
-        Message::ChangePlanet(entity) => {
-            let entities = vec![entity];
-            Model { entities, ..data }
         }
 
         Message::ZoomCamera(delta) => {
