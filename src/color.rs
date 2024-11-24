@@ -52,6 +52,10 @@ impl Color {
         self.r == 0 && self.g == 0 && self.b == 0
     }
 
+    pub fn is_white(&self) -> bool {
+        self.r == 255 && self.g == 255 && self.b == 255
+    }
+
     pub fn change_brightness_by(&self, factor: f32) -> Self {
         let Color { r, g, b } = self;
         let r = (*r as f32 * factor).round() as u8;

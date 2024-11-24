@@ -16,6 +16,8 @@ pub enum BlendMode {
     Difference,
     Exclusion,
     Replace,
+    IgnoreWhiteReplace,
+    IgnoreWhiteAdd,
 }
 
 impl Color {
@@ -36,6 +38,24 @@ impl Color {
             BlendMode::Difference => self.blend_difference(blend),
             BlendMode::Exclusion => self.blend_exclusion(blend),
             BlendMode::Replace => *blend,
+            BlendMode::IgnoreWhiteReplace => self.ignore_white_replace(blend),
+            BlendMode::IgnoreWhiteAdd => self.ignore_white_add(blend),
+        }
+    }
+
+    pub fn ignore_white_add(&self, blend: &Color) -> Self {
+        if blend.is_white() {
+            *self
+        } else {
+            self.blend_add(blend)
+        }
+    }
+
+    pub fn ignore_white_replace(&self, blend: &Color) -> Self {
+        if blend.is_white() {
+            *self
+        } else {
+            *blend
         }
     }
 

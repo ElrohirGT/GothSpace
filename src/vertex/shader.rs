@@ -19,7 +19,6 @@ pub enum ShaderType {
         red: f32,
         blue: f32,
     },
-    AliveCheckerboard,
     Intensity,
     BaseColor,
     FBmShader {

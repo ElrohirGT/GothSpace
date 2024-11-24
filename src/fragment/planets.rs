@@ -62,6 +62,7 @@ pub fn create_disco_planet() -> Entity {
     });
 
     Entity {
+        wireframe_color: None,
         ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
@@ -111,6 +112,7 @@ pub fn create_ocean_planet() -> Entity {
     });
 
     Entity {
+        wireframe_color: None,
         ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
@@ -143,6 +145,7 @@ pub fn create_gas_giant() -> Entity {
 
     Entity {
         ellipsis,
+        wireframe_color: None,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -193,6 +196,7 @@ pub fn create_face_planet() -> Entity {
     });
 
     Entity {
+        wireframe_color: None,
         ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
@@ -234,6 +238,7 @@ pub fn create_snow_planet() -> Entity {
     });
 
     Entity {
+        wireframe_color: None,
         ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
@@ -281,6 +286,7 @@ pub fn create_sun(starting_position: Vec3) -> Entity {
     model.scale *= 4.0;
 
     Entity {
+        wireframe_color: None,
         ellipsis: None,
         custom_depth: None,
         model_matrix: create_model_matrix(model.translation, model.scale, model.rotation),
@@ -343,6 +349,7 @@ pub fn create_green_planet() -> Entity {
     });
 
     Entity {
+        wireframe_color: None,
         ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),

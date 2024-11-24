@@ -25,6 +25,7 @@ use std::f32::consts::PI;
 use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 0.1;
+const MAX_ZOOM: f32 = 3.0;
 const ROTATION_SPEED: f32 = PI * 1e-3;
 const SHIP_ROTATION_SPEED: f32 = PI * 5e-2;
 const PLAYER_ACCELERATION: f32 = 1e-3;
@@ -233,7 +234,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         starting_ship_position + CAM_POS_DELTA_TO_SHIP,
         starting_ship_position + CAM_CENTER_DELTA_TO_SHIP,
         Vec3::new(0.0, 1.0, 0.0),
-        2.0,
+        MAX_ZOOM,
     );
     let sun = create_sun(vec3(0.0, 0.0, 0.0));
     let green_planet = create_green_planet();

@@ -20,44 +20,44 @@ pub fn fragment_shader(
     noise: &mut FastNoiseLite,
     textures: &GameTextures,
 ) -> Fragment {
-    let color = inputs.iter().fold(fragment.color, |acc, current| {
-        let color = match current.0 {
-            ShaderType::Stripe { stripe_width } => {
-                stripes_shader(&fragment, stripe_width, &current.1)
-            }
-            ShaderType::MovingStripes {
-                stripe_width,
-                speed,
-            } => moving_stripes(&fragment, stripe_width, speed, &current.1, uniforms),
-            ShaderType::AliveCheckerboard => todo!(),
-            ShaderType::Intensity => intensity_shader(&fragment, &acc),
-            ShaderType::BaseColor => current.1[0],
-            ShaderType::GlowShader {
-                stripe_width,
-                glow_size,
-                red,
-                blue,
-            } => glowing_shader(&fragment, stripe_width, glow_size, red, blue),
-            ShaderType::FBmShader {
-                zoom,
-                speed,
-                fractal,
-            } => fbm_shader(
-                &fragment, uniforms, &current.1, speed, zoom, &fractal, noise,
-            ),
-            ShaderType::CellularShader {
-                zoom,
-                speed,
-                fractal,
-                cellular,
-            } => cellular_shader(
-                &fragment, uniforms, &current.1, speed, zoom, &fractal, &cellular, noise,
-            ),
-            ShaderType::Texture { texture } => texture_shader(&fragment, textures, texture),
-        };
+    let color = inputs.iter().fold(
+        fragment.color,
+        |acc, (shader_type, colors, blend_strategy)| {
+            let color = match shader_type {
+                ShaderType::Stripe { stripe_width } => {
+                    stripes_shader(&fragment, *stripe_width, colors)
+                }
+                ShaderType::MovingStripes {
+                    stripe_width,
+                    speed,
+                } => moving_stripes(&fragment, *stripe_width, *speed, colors, uniforms),
+                ShaderType::Intensity => intensity_shader(&fragment, &acc),
+                ShaderType::BaseColor => colors[0],
+                ShaderType::GlowShader {
+                    stripe_width,
+                    glow_size,
+                    red,
+                    blue,
+                } => glowing_shader(&fragment, *stripe_width, *glow_size, *red, *blue),
+                ShaderType::FBmShader {
+                    zoom,
+                    speed,
+                    fractal,
+                } => fbm_shader(&fragment, uniforms, colors, *speed, *zoom, fractal, noise),
+                ShaderType::CellularShader {
+                    zoom,
+                    speed,
+                    fractal,
+                    cellular,
+                } => cellular_shader(
+                    &fragment, uniforms, colors, *speed, *zoom, fractal, cellular, noise,
+                ),
+                ShaderType::Texture { texture } => texture_shader(&fragment, textures, *texture),
+            };
 
-        acc.blend(&color, &current.2)
-    });
+            acc.blend(&color, blend_strategy)
+        },
+    );
 
     Fragment { color, ..fragment }
 }

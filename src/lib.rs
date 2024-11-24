@@ -69,6 +69,8 @@ pub struct Entity {
     /// Lower depth means it will be rendered on top other stuff
     pub custom_depth: Option<f32>,
     pub ellipsis: Option<Ellipsis>,
+    /// Color of the wireframe of the model
+    pub wireframe_color: Option<Color>,
 }
 
 impl Entity {

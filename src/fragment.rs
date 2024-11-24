@@ -54,7 +54,7 @@ impl Fragment {
     // }
 }
 
-pub fn line(a: &Vertex, b: &Vertex) -> Vec<Fragment> {
+pub fn line(color: &Color, a: &Vertex, b: &Vertex) -> Vec<Fragment> {
     let mut fragments = vec![];
     // let distance = nalgebra_glm::distance(&b.transformed_position, &a.transformed_position);
     // let step_size = 1.0 / (10.0 / 2.0 * distance);
@@ -72,8 +72,8 @@ pub fn line(a: &Vertex, b: &Vertex) -> Vec<Fragment> {
         // println!("POINT: {new_position:?} t={accum}");
         fragments.push(Fragment::new(
             vec3_to_vec2(&new_position),
-            Color::pink(),
-            0.0,
+            *color,
+            400.0,
             new_position,
         ));
         accum += step_size;
@@ -82,11 +82,11 @@ pub fn line(a: &Vertex, b: &Vertex) -> Vec<Fragment> {
     fragments
 }
 
-pub fn wireframe_triangle(v1: &Vertex, v2: &Vertex, v3: &Vertex) -> Vec<Fragment> {
-    line(v1, v2)
+pub fn wireframe_triangle(color: &Color, v1: &Vertex, v2: &Vertex, v3: &Vertex) -> Vec<Fragment> {
+    line(color, v1, v2)
         .into_iter()
-        .chain(line(v2, v3))
-        .chain(line(v3, v1))
+        .chain(line(color, v2, v3))
+        .chain(line(color, v3, v1))
         .collect()
 }
 
@@ -98,7 +98,12 @@ pub fn triangle(
     use_screen_position: &bool,
     lights: &[Light],
     custom_depth: Option<f32>,
+    wireframe_color: &Option<Color>,
 ) -> Vec<Fragment> {
+    let mut fragments = match wireframe_color {
+        Some(color) => wireframe_triangle(&color, v1, v2, v3),
+        None => vec![],
+    };
     // let mut fragments = wireframe_triangle(v1, v2, v3);
     // let mut fragments = vec![];
 
@@ -109,8 +114,8 @@ pub fn triangle(
 
     let base_color = Color::new(100, 100, 100);
 
-    let possible_fragment_count = (max.1 - min.1) * (max.0 - min.0);
-    let mut fragments = Vec::with_capacity(possible_fragment_count as usize);
+    // let possible_fragment_count = (max.1 - min.1) * (max.0 - min.0);
+    // let mut fragments = Vec::with_capacity(possible_fragment_count as usize);
 
     (min.1..=max.1).for_each(|y| {
         (min.0..=max.0).for_each(|x| {

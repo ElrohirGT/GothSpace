@@ -5,6 +5,7 @@ use nalgebra_glm::{Mat4, Vec3};
 use rayon::prelude::*;
 
 use crate::{
+    color::Color,
     fragment::{shaders::fragment_shader, triangle, Fragment},
     framebuffer::Framebuffer,
     light::Light,
@@ -47,6 +48,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
             optimizations,
             use_screen_position,
             custom_depth,
+            wireframe_color: color_of_lines,
             ..
         } = entity;
 
@@ -77,6 +79,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
                 use_screen_position,
                 lights,
                 *custom_depth,
+                color_of_lines,
             );
             // println!("Rasterization applied!");
 
@@ -136,6 +139,7 @@ fn rasterize(
     use_screen_position: &bool,
     lights: &[Light],
     custom_depth: Option<f32>,
+    wirefragme_color: &Option<Color>,
 ) -> Vec<Fragment> {
     triangles
         .iter()
@@ -148,6 +152,7 @@ fn rasterize(
                 use_screen_position,
                 lights,
                 custom_depth,
+                wirefragme_color,
             )
         })
         .collect()
