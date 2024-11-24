@@ -320,11 +320,14 @@ fn update(data: Model, msg: Message) -> Model {
 
             let ship_rotation = ship.entity.model.rotation - ORIGINAL_ROTATION;
             let ship_direction = vec3(
-                -ship_rotation.y.sin(),
+                -ship_rotation.z.sin(),
                 -ship_rotation.x.sin(),
-                -ship_rotation.z.cos(),
+                -ship_rotation.y.cos(), // YA SIRVE
             )
             .normalize();
+
+            println!("{ship_rotation:?} -> {ship_direction:?}");
+
             ship.acceleration += ship_direction * delta;
             ship.velocity += ship.acceleration;
             if ship.velocity.magnitude() > MAX_PLAYER_SPEED {
