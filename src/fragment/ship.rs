@@ -7,15 +7,15 @@ use crate::{
     color::{blenders::BlendMode, Color},
     obj::load_objs,
     vertex::shader::{create_model_matrix, ShaderType},
-    Entity, EntityModel, EntityOptimizations, Ship,
+    Entity, EntityModel, EntityOptimizations, EntityShader, Ship,
 };
+
+use super::shaders;
 
 pub const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
 
-pub fn create_ship(initial_world_position: Vec3) -> Ship {
-    let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
-
-    let shaders = vec![
+fn ship_shaders() -> Vec<EntityShader> {
+    vec![
         (
             ShaderType::BaseColor,
             vec![Color::new(0, 0, 255)],
@@ -41,8 +41,13 @@ pub fn create_ship(initial_world_position: Vec3) -> Ship {
             vec![0xff002b.into()],
             BlendMode::IgnoreWhiteAdd,
         ),
-    ];
+    ]
+}
 
+pub fn create_ship(initial_world_position: Vec3) -> Ship {
+    let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
+
+    let shaders = ship_shaders();
     let scale = 0.2;
     let rotation = ORIGINAL_ROTATION;
     let translation = initial_world_position;
@@ -76,16 +81,7 @@ pub fn create_ship(initial_world_position: Vec3) -> Ship {
 
 pub fn create_ship_from(other_ship: &Ship) -> Ship {
     let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
-
-    let shaders = vec![
-        (
-            ShaderType::BaseColor,
-            vec![Color::new(0, 0, 255)],
-            BlendMode::Replace,
-        ),
-        // (ShaderType::Intensity, vec![], BlendMode::Replace),
-    ];
-
+    let shaders = ship_shaders();
     let optimizations = EntityOptimizations {
         camera_direction: false,
         frustum_cutting: false,

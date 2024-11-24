@@ -1,5 +1,3 @@
-use std::ops::RangeBounds;
-
 use fastnoise_lite::FastNoiseLite;
 use nalgebra_glm::{Mat4, Vec3};
 use rayon::prelude::*;
@@ -100,7 +98,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
 
 fn apply_shaders(vertices: &[Vertex], uniforms: &Uniforms, model_matrix: &Mat4) -> Vec<Vertex> {
     vertices
-        .iter()
+        .par_iter()
         .map(|v| vertex_shader(v, uniforms, model_matrix))
         .collect()
 }
@@ -142,7 +140,7 @@ fn rasterize(
     wirefragme_color: &Option<Color>,
 ) -> Vec<Fragment> {
     triangles
-        .iter()
+        .par_iter()
         .flat_map(|tri| {
             triangle(
                 &tri[0],
