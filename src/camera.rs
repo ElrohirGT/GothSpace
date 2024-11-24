@@ -41,6 +41,12 @@ impl Camera {
         }
     }
 
+    pub fn modify_center_and_eye(&mut self, new_center: Vec3, new_eye: Vec3) {
+        self.has_changed = true;
+        self.center = new_center;
+        self.eye = new_eye;
+    }
+
     /// Advances the camera by a certain delta in the direction is facing.
     pub fn advance_camera(&mut self, delta: f32) {
         let delta_vec = self.direction() * delta;

@@ -32,7 +32,7 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
 
     let mut render_entities = Vec::with_capacity(1 + entities.len());
     if matches!(view_type, crate::ViewType::FirstPerson) {
-        render_entities.push(ship);
+        render_entities.push(&ship.entity);
     }
 
     for e in entities.iter() {

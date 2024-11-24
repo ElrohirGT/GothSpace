@@ -7,12 +7,12 @@ use crate::{
     color::{blenders::BlendMode, Color},
     obj::load_objs,
     vertex::shader::{create_model_matrix, ShaderType},
-    Entity, EntityModel, EntityOptimizations,
+    Entity, EntityModel, EntityOptimizations, Ship,
 };
 
 pub const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
 
-pub fn create_ship(initial_world_position: Vec3) -> Entity {
+pub fn create_ship(initial_world_position: Vec3) -> Ship {
     let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
 
     let shaders = vec![
@@ -32,7 +32,7 @@ pub fn create_ship(initial_world_position: Vec3) -> Entity {
         frustum_cutting: false,
     };
 
-    Entity {
+    let entity = Entity {
         ellipsis: None,
         objs: ship_obj,
         use_screen_position: false,
@@ -45,10 +45,16 @@ pub fn create_ship(initial_world_position: Vec3) -> Entity {
             translation,
         },
         custom_depth: None,
+    };
+
+    Ship {
+        acceleration: Vec3::zeros(),
+        velocity: Vec3::zeros(),
+        entity,
     }
 }
 
-pub fn create_ship_from(other_ship: &Entity) -> Entity {
+pub fn create_ship_from(other_ship: &Ship) -> Ship {
     let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
 
     let shaders = vec![
@@ -69,7 +75,7 @@ pub fn create_ship_from(other_ship: &Entity) -> Entity {
         rotation,
         scale,
         translation,
-    } = other_ship.model;
+    } = other_ship.entity.model;
 
     let model_matrix = create_model_matrix(translation, scale, rotation);
 
@@ -79,7 +85,7 @@ pub fn create_ship_from(other_ship: &Entity) -> Entity {
         translation,
     };
 
-    Entity {
+    let entity = Entity {
         model,
         model_matrix,
         ellipsis: None,
@@ -88,6 +94,12 @@ pub fn create_ship_from(other_ship: &Entity) -> Entity {
         shaders,
         optimizations,
         custom_depth: None,
+    };
+
+    Ship {
+        acceleration: other_ship.acceleration,
+        velocity: other_ship.velocity,
+        entity,
     }
 }
 

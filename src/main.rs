@@ -28,7 +28,8 @@ use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 0.1;
 const ROTATION_SPEED: f32 = PI * 1e-3;
-const PLAYER_SPEED: f32 = 0.2;
+const PLAYER_ACCELERATION: f32 = 1e-3;
+const MAX_PLAYER_SPEED: f32 = 0.3;
 const CAM_POS_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.0, 10.0);
 const CAM_CENTER_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.5, 0.0);
 
@@ -117,8 +118,8 @@ fn main() {
             .get_keys_pressed(KeyRepeat::Yes)
             .into_iter()
             .filter_map(|key| match key {
-                Key::W => Some(Message::Advance(PLAYER_SPEED)),
-                Key::S => Some(Message::Advance(-PLAYER_SPEED)),
+                Key::W => Some(Message::Accelerate(PLAYER_ACCELERATION)),
+                Key::S => Some(Message::Accelerate(-PLAYER_ACCELERATION)),
 
                 Key::Tab => {
                     if mode_cooldown_timer == 0 {
@@ -128,6 +129,8 @@ fn main() {
                         None
                     }
                 }
+
+                Key::Space => Some(Message::StopShip),
 
                 // Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
                 // Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
@@ -316,30 +319,21 @@ fn update(data: Model, msg: Message) -> Model {
             }
         }
 
-        Message::Advance(delta) => {
+        Message::Accelerate(delta) => {
             let Model {
-                mut camera,
+                camera,
                 uniforms,
                 mut ship,
                 ..
             } = data;
 
-            let previous_position = ship.model.translation;
-            let ship_direction = (ship.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
-            let ship_pos_delta = ship_direction * delta;
-            let translation = previous_position + ship_pos_delta;
-
-            ship.modify_model(EntityModel {
-                translation,
-                ..ship.model
-            });
-
-            camera.center = translation;
-            camera.eye += ship_pos_delta;
-            let uniforms = Uniforms {
-                view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
-                ..uniforms
-            };
+            let ship_direction =
+                (ship.entity.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
+            ship.acceleration += ship_direction * delta;
+            ship.velocity += ship.acceleration;
+            if ship.velocity.magnitude() > MAX_PLAYER_SPEED {
+                ship.velocity -= ship.acceleration;
+            }
 
             Model {
                 uniforms,
@@ -353,6 +347,8 @@ fn update(data: Model, msg: Message) -> Model {
             let Model {
                 uniforms,
                 mut entities,
+                mut ship,
+                mut camera,
                 ..
             } = data;
             let uniforms = Uniforms { time, ..uniforms };
@@ -367,9 +363,28 @@ fn update(data: Model, msg: Message) -> Model {
                 }
             }
 
+            let previous_position = ship.entity.model.translation;
+            ship.velocity += ship.acceleration;
+            if ship.velocity.magnitude() > MAX_PLAYER_SPEED {
+                ship.velocity -= ship.acceleration;
+            }
+            let translation = previous_position + ship.velocity;
+            ship.entity.modify_model(EntityModel {
+                translation,
+                ..ship.entity.model
+            });
+
+            camera.modify_center_and_eye(translation, camera.eye + ship.velocity);
+            let uniforms = Uniforms {
+                view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
+                ..uniforms
+            };
+
             Model {
                 uniforms,
                 entities,
+                camera,
+                ship,
                 ..data
             }
         }
@@ -430,6 +445,15 @@ fn update(data: Model, msg: Message) -> Model {
                     }
                 }
             }
+        }
+
+        Message::StopShip => {
+            let Model { mut ship, .. } = data;
+
+            ship.velocity = Vec3::zeros();
+            ship.acceleration = Vec3::zeros();
+
+            Model { ship, ..data }
         }
     }
 }

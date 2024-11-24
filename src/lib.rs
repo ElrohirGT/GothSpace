@@ -34,9 +34,10 @@ pub enum Message {
     ZoomCamera(f32),
     RotateCamera(f32, f32),
     UpdateTime(f32),
-    Advance(f32),
+    Accelerate(f32),
     ResizeWindow((usize, usize)),
     AlternateView,
+    StopShip,
 }
 
 pub type EntityShader = (ShaderType, Vec<Color>, BlendMode);
@@ -83,14 +84,20 @@ pub enum ViewType {
     FirstPerson,
 }
 
+pub struct Ship {
+    pub acceleration: Vec3,
+    pub velocity: Vec3,
+    pub entity: Entity,
+}
+
 pub struct Model {
     pub view_type: ViewType,
     pub entities: Vec<Entity>,
-    pub ship: Entity,
+    pub ship: Ship,
     pub uniforms: Uniforms,
     pub camera: Camera,
     pub textures: GameTextures,
     pub lights: Vec<Light>,
     pub skybox: Skybox,
-    pub previous_fpv_state: (Entity, Camera),
+    pub previous_fpv_state: (Ship, Camera),
 }
