@@ -10,24 +10,32 @@ use crate::color::Color;
 #[derive(Debug, Clone, Copy)]
 pub enum Textures {
     Space,
+    Instructions,
 }
 
 pub struct GameTextures {
     pub space: Texture,
+    pub instructions: Texture,
 }
 
 impl GameTextures {
     pub fn new(asset_dir: &str) -> Self {
         let space = format!("{}{}", asset_dir, "space.png");
+        let instructions = format!("{}{}", asset_dir, "instructions.jpg");
 
         let space = Texture::new(&space);
+        let instructions = Texture::new(&instructions);
 
-        GameTextures { space }
+        GameTextures {
+            space,
+            instructions,
+        }
     }
 
     pub fn get_texture(&self, id: Textures) -> &Texture {
         match id {
             Textures::Space => &self.space,
+            Textures::Instructions => &self.instructions,
         }
     }
 }
@@ -106,6 +114,8 @@ impl Texture {
     pub fn get_pixel_color(&self, u: f32, v: f32) -> Color {
         let x = (u * self.width as f32) as u32;
         let y = (v * self.height as f32) as u32;
+
+        // println!("({}, {}) -> ({}, {})", u, v, x, y);
 
         let idx = y * self.width + x;
         self.colors[idx as usize]

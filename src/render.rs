@@ -24,74 +24,80 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
         lights,
         skybox,
         view_type,
+        game_window,
         ..
     } = data;
 
-    skybox.render(framebuffer, uniforms, &camera.eye);
+    match game_window {
+        crate::GameWindow::Controls => {}
+        crate::GameWindow::Simulation => {
+            skybox.render(framebuffer, uniforms, &camera.eye);
 
-    let mut render_entities = Vec::with_capacity(1 + entities.len());
-    if matches!(view_type, crate::ViewType::FirstPerson) {
-        render_entities.push(&ship.entity);
-    }
+            let mut render_entities = Vec::with_capacity(1 + entities.len());
+            if matches!(view_type, crate::ViewType::FirstPerson) {
+                render_entities.push(&ship.entity);
+            }
 
-    for e in entities.iter() {
-        render_entities.push(e);
-    }
+            for e in entities.iter() {
+                render_entities.push(e);
+            }
 
-    for entity in render_entities {
-        let Entity {
-            objs,
-            shaders,
-            model_matrix,
-            optimizations,
-            use_screen_position,
-            custom_depth,
-            wireframe_color: color_of_lines,
-            ..
-        } = entity;
+            for entity in render_entities {
+                let Entity {
+                    objs,
+                    shaders,
+                    model_matrix,
+                    optimizations,
+                    use_screen_position,
+                    custom_depth,
+                    wireframe_color: color_of_lines,
+                    ..
+                } = entity;
 
-        for vertex_array in objs {
-            // Vertex Shader
-            // println!("Applying shaders...");
-            let new_vertices = apply_shaders(vertex_array, uniforms, model_matrix);
-            // println!("Vertex shader applied!");
-            // for vertex in new_vertices.iter().take(25) {
-            //     println!("Transformed vertex: {:?}", vertex);
-            // }
+                for vertex_array in objs {
+                    // Vertex Shader
+                    // println!("Applying shaders...");
+                    let new_vertices = apply_shaders(vertex_array, uniforms, model_matrix);
+                    // println!("Vertex shader applied!");
+                    // for vertex in new_vertices.iter().take(25) {
+                    //     println!("Transformed vertex: {:?}", vertex);
+                    // }
 
-            // Primitive assembly
-            // println!("Assembly...");
-            let triangles = assembly(&new_vertices, optimizations.frustum_cutting);
-            // println!("Assembly done!");
+                    // Primitive assembly
+                    // println!("Assembly...");
+                    let triangles = assembly(&new_vertices, optimizations.frustum_cutting);
+                    // println!("Assembly done!");
 
-            // Rasterization
-            // println!("Applying rasterization...");
-            let camera_direction = &camera.direction();
-            let fragments = rasterize(
-                triangles,
-                if optimizations.camera_direction {
-                    Some(camera_direction)
-                } else {
-                    None
-                },
-                use_screen_position,
-                lights,
-                *custom_depth,
-                color_of_lines,
-            );
-            // println!("Rasterization applied!");
+                    // Rasterization
+                    // println!("Applying rasterization...");
+                    let camera_direction = &camera.direction();
+                    let fragments = rasterize(
+                        triangles,
+                        if optimizations.camera_direction {
+                            Some(camera_direction)
+                        } else {
+                            None
+                        },
+                        use_screen_position,
+                        lights,
+                        *custom_depth,
+                        color_of_lines,
+                    );
+                    // println!("Rasterization applied!");
 
-            // println!("Applying fragment shaders...");
-            let fragments = fragments
-                .into_iter()
-                .map(|f| fragment_shader(f, shaders, uniforms, noise, textures))
-                .collect();
-            // println!("Fragment shaders applied!");
+                    // println!("Applying fragment shaders...");
+                    let fragments = fragments
+                        .into_iter()
+                        .map(|f| fragment_shader(f, shaders, uniforms, noise, textures))
+                        .collect();
+                    // println!("Fragment shaders applied!");
 
-            // Fragment Processing
-            // println!("Painting fragments...");
-            paint_fragments(fragments, framebuffer);
-            // println!("Fragments painted!");
+                    // Fragment Processing
+                    // println!("Painting fragments...");
+                    paint_fragments(fragments, framebuffer);
+                    // println!("Fragments painted!");
+                }
+            }
         }
     }
 }

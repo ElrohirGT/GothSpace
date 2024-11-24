@@ -162,7 +162,7 @@ impl Framebuffer {
     }
 
     /// Sets the `background` array from the framebuffer to the value from a texture.
-    pub fn set_background_from_texture(&mut self, texture: Texture) {
+    pub fn set_background_from_texture(&mut self, texture: &Texture) {
         let Framebuffer {
             width,
             height,
@@ -170,17 +170,18 @@ impl Framebuffer {
             ..
         } = self;
 
-        let tex = &texture;
         let f_width = *width as f32;
         let f_height = *height as f32;
 
-        *empty_buffer = (0..*width)
-            .flat_map(|x| {
+        *empty_buffer = (0..(*width * *height))
+            .map(|i| {
+                let y = i / *width;
+                let x = i % *width;
+
                 let x = x as f32 / f_width;
-                (0..*height).map(move |y| {
-                    let y = y as f32 / f_height;
-                    tex.get_pixel_color(x, y).into()
-                })
+                let y = y as f32 / f_height;
+
+                texture.get_pixel_color(x, y).into()
             })
             .collect();
     }

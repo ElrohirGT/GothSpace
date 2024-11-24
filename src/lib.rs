@@ -39,6 +39,8 @@ pub enum Message {
     AlternateView,
     StopShip,
     RotateShip(Vec3),
+    StartGame,
+    ViewControls,
 }
 
 pub type EntityShader = (ShaderType, Vec<Color>, BlendMode);
@@ -93,6 +95,11 @@ pub struct Ship {
     pub entity: Entity,
 }
 
+pub enum GameWindow {
+    Controls,
+    Simulation,
+}
+
 pub struct Model {
     pub view_type: ViewType,
     pub entities: Vec<Entity>,
@@ -103,4 +110,5 @@ pub struct Model {
     pub lights: Vec<Light>,
     pub skybox: Skybox,
     pub previous_fpv_state: (Ship, Camera),
+    pub game_window: GameWindow,
 }

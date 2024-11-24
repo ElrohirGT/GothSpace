@@ -10,11 +10,11 @@ use gothspace::fragment::ship::{create_ship, create_ship_from, ORIGINAL_ROTATION
 use gothspace::light::Light;
 use gothspace::render::render;
 use gothspace::skybox::Skybox;
-use gothspace::texture::GameTextures;
+use gothspace::texture::{GameTextures, Texture};
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };
-use gothspace::{framebuffer, EntityModel};
+use gothspace::{framebuffer, EntityModel, GameWindow};
 use gothspace::{Message, Model};
 use minifb::{Key, KeyRepeat, Window, WindowOptions};
 use mouse_rs::types::Point;
@@ -49,7 +49,7 @@ fn main() {
 
     let window_options = WindowOptions {
         resize: true,
-        scale: minifb::Scale::FitScreen,
+        // scale: minifb::Scale::FitScreen,
         ..WindowOptions::default()
     };
 
@@ -92,12 +92,16 @@ fn main() {
     let mut noise = FastNoiseLite::with_seed(1506);
     noise.set_frequency(Some(0.004));
     render(&mut framebuffer, &data, &mut noise);
+    framebuffer.set_background_from_texture(&Texture::new("assets/textures/instructions.jpg"));
 
     let mut splash_timer = 0;
     let splash_delay = 300;
 
     let mode_cooldown = 5;
     let mut mode_cooldown_timer = 0;
+
+    let game_view_cooldown = 5;
+    let mut game_view_cooldown_timer = 0;
 
     let last_recorded_frames_max_count = 60;
     let mut last_recorded_frames = VecDeque::with_capacity(last_recorded_frames_max_count);
@@ -143,6 +147,30 @@ fn main() {
                     }
                 }
 
+                Key::Enter => {
+                    if game_view_cooldown_timer == 0 {
+                        game_view_cooldown_timer = game_view_cooldown;
+                        println!("Displaying simulation...");
+                        framebuffer.set_background_color(Color::black());
+                        Some(Message::StartGame)
+                    } else {
+                        None
+                    }
+                }
+
+                Key::C => {
+                    if game_view_cooldown_timer == 0 {
+                        game_view_cooldown_timer = game_view_cooldown;
+                        println!("Displaying controls...");
+                        framebuffer.set_background_from_texture(&Texture::new(
+                            "assets/textures/instructions.jpg",
+                        ));
+                        Some(Message::ViewControls)
+                    } else {
+                        None
+                    }
+                }
+
                 Key::Space => Some(Message::StopShip),
 
                 _ => None,
@@ -151,6 +179,7 @@ fn main() {
         should_update = true;
         messages.push(Message::UpdateTime(time));
         mode_cooldown_timer = (mode_cooldown_timer - 1).max(0);
+        game_view_cooldown_timer = (game_view_cooldown_timer - 1).max(0);
 
         let Point { x, y } = mouse.get_position().unwrap();
         messages.push(Message::RotateCamera(
@@ -270,7 +299,10 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let skybox = Skybox::new(5000, 50.0);
     let textures = GameTextures::new("assets/textures/");
 
+    let game_window = GameWindow::Controls;
+
     Model {
+        game_window,
         view_type: gothspace::ViewType::FirstPerson,
         textures,
         entities,
@@ -463,6 +495,22 @@ fn update(data: Model, msg: Message) -> Model {
             });
 
             Model { ship, ..data }
+        }
+
+        Message::StartGame => {
+            let game_window = GameWindow::Simulation;
+            Model {
+                game_window,
+                ..data
+            }
+        }
+
+        Message::ViewControls => {
+            let game_window = GameWindow::Controls;
+            Model {
+                game_window,
+                ..data
+            }
         }
     }
 }
