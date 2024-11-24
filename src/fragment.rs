@@ -1,3 +1,4 @@
+pub mod ellipsis;
 pub mod material;
 pub mod planets;
 pub mod shaders;

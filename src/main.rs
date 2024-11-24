@@ -1,6 +1,7 @@
 use fastnoise_lite::FastNoiseLite;
 use gothspace::camera::Camera;
 use gothspace::color::Color;
+use gothspace::fragment::ellipsis::{next_point_in_ellipsis, Ellipsis};
 use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
@@ -247,8 +248,8 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     }];
 
     let skybox = Skybox::new(5000, 50.0);
-
     let textures = GameTextures::new("assets/textures/");
+
     Model {
         textures,
         entities,
@@ -323,9 +324,28 @@ fn update(data: Model, msg: Message) -> Model {
         }
 
         Message::UpdateTime(time) => {
-            let Model { uniforms, .. } = data;
+            let Model {
+                uniforms,
+                mut entities,
+                ..
+            } = data;
             let uniforms = Uniforms { time, ..uniforms };
-            Model { uniforms, ..data }
+
+            for entity in &mut entities {
+                if let Some(ref info) = entity.ellipsis {
+                    let new_position = next_point_in_ellipsis(time * info.velocity, info);
+                    entity.modify_model(EntityModel {
+                        translation: new_position,
+                        ..entity.model
+                    });
+                }
+            }
+
+            Model {
+                uniforms,
+                entities,
+                ..data
+            }
         }
 
         Message::ChangePlanet(entity) => {

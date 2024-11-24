@@ -33,6 +33,7 @@ pub fn create_ship(initial_world_position: Vec3) -> Entity {
     };
 
     Entity {
+        ellipsis: None,
         objs: ship_obj,
         use_screen_position: false,
         shaders,

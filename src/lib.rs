@@ -12,6 +12,7 @@ pub mod vertex;
 
 use camera::Camera;
 use color::{blenders::BlendMode, Color};
+use fragment::ellipsis::Ellipsis;
 use light::Light;
 use nalgebra_glm::{Mat4, Vec2, Vec3};
 use obj::Obj;
@@ -59,12 +60,13 @@ pub struct Entity {
     pub shaders: Vec<EntityShader>,
     pub model_matrix: Mat4,
     pub optimizations: EntityOptimizations,
-    /// If true, will use the screen position instead of the model position of each vertex for its
-    /// shaders.
+    /// If true, will use the screen position instead of
+    /// the model position of each vertex for its shaders.
     pub use_screen_position: bool,
     pub model: EntityModel,
     /// Lower depth means it will be rendered on top other stuff
     pub custom_depth: Option<f32>,
+    pub ellipsis: Option<Ellipsis>,
 }
 
 impl Entity {

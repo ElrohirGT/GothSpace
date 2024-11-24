@@ -7,6 +7,8 @@ use crate::{
     Entity, EntityModel, EntityOptimizations,
 };
 
+use super::ellipsis::Ellipsis;
+
 pub fn create_default_planet_model_matrix() -> Mat4 {
     let model = create_default_planet_model();
     create_model_matrix(model.translation, model.scale, model.rotation)
@@ -49,6 +51,7 @@ pub fn create_disco_planet() -> Entity {
     ];
 
     Entity {
+        ellipsis: None,
         custom_depth: None,
         model: create_default_planet_model(),
         objs: planet_obj,
@@ -89,6 +92,7 @@ pub fn create_ocean_planet() -> Entity {
     ];
 
     Entity {
+        ellipsis: None,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -111,6 +115,7 @@ pub fn create_gas_giant() -> Entity {
     ];
 
     Entity {
+        ellipsis: None,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -153,6 +158,7 @@ pub fn create_face_planet() -> Entity {
     ];
 
     Entity {
+        ellipsis: None,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -185,6 +191,7 @@ pub fn create_snow_planet() -> Entity {
     ];
 
     Entity {
+        ellipsis: None,
         custom_depth: None,
         model: create_default_planet_model(),
         use_screen_position: false,
@@ -230,6 +237,7 @@ pub fn create_sun() -> Entity {
     model.scale *= 4.0;
 
     Entity {
+        ellipsis: None,
         custom_depth: None,
         model_matrix: create_model_matrix(model.translation, model.scale, model.rotation),
         model,
@@ -282,7 +290,16 @@ pub fn create_green_planet() -> Entity {
         // (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
+    let ellipsis = Some(Ellipsis {
+        center: Vec3::zeros(),
+        a: 10.0,
+        b: 10.0,
+        y_max: 12.0,
+        velocity: 5e-3,
+    });
+
     Entity {
+        ellipsis,
         custom_depth: None,
         model: create_default_planet_model(),
         objs: planet_obj,
