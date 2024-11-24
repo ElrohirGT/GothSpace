@@ -21,7 +21,7 @@ pub fn create_ship(initial_world_position: Vec3) -> Ship {
             vec![Color::new(0, 0, 255)],
             BlendMode::Replace,
         ),
-        (ShaderType::Intensity, vec![], BlendMode::Replace),
+        // (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
     let scale = 0.1;
@@ -63,7 +63,7 @@ pub fn create_ship_from(other_ship: &Ship) -> Ship {
             vec![Color::new(0, 0, 255)],
             BlendMode::Replace,
         ),
-        (ShaderType::Intensity, vec![], BlendMode::Replace),
+        // (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
     let optimizations = EntityOptimizations {

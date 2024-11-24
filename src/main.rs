@@ -28,7 +28,7 @@ use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 0.1;
 const ROTATION_SPEED: f32 = PI * 1e-3;
-const SHIP_ROTATION_SPEED: f32 = PI * 1e-2;
+const SHIP_ROTATION_SPEED: f32 = PI * 5e-2;
 const PLAYER_ACCELERATION: f32 = 1e-3;
 const MAX_PLAYER_SPEED: f32 = 0.3;
 const CAM_POS_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.0, 10.0);
@@ -298,7 +298,6 @@ fn update(data: Model, msg: Message) -> Model {
                 ..
             } = data;
 
-            // let dir = vec3(delta_yaw, delta_pitch, 1.0).normalize();
             camera.orbit(delta_yaw, delta_pitch);
 
             let uniforms = Uniforms {
@@ -323,11 +322,12 @@ fn update(data: Model, msg: Message) -> Model {
 
             let ship_rotation = ship.entity.model.rotation - ORIGINAL_ROTATION;
             let ship_direction = vec3(
-                ship_rotation.x.sin(),
-                ship_rotation.y.sin(),
-                ship_rotation.z.sin(),
+                -ship_rotation.y.sin(),
+                -ship_rotation.x.sin(),
+                -ship_rotation.z.cos(),
             )
             .normalize();
+            // println!("{ship_rotation:?} -> {ship_direction:?}");
             // let ship_direction =
             //     (ship.entity.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
             ship.acceleration += ship_direction * delta;
