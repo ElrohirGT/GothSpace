@@ -1,7 +1,7 @@
 use fastnoise_lite::FastNoiseLite;
 use gothspace::camera::Camera;
 use gothspace::color::Color;
-use gothspace::fragment::ellipsis::{next_point_in_ellipsis, Ellipsis};
+use gothspace::fragment::ellipsis::next_point_in_ellipsis;
 use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
@@ -28,6 +28,7 @@ use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 0.1;
 const ROTATION_SPEED: f32 = PI * 1e-3;
+const SHIP_ROTATION_SPEED: f32 = PI * 1e-2;
 const PLAYER_ACCELERATION: f32 = 1e-3;
 const MAX_PLAYER_SPEED: f32 = 0.3;
 const CAM_POS_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.0, 10.0);
@@ -121,6 +122,19 @@ fn main() {
                 Key::W => Some(Message::Accelerate(PLAYER_ACCELERATION)),
                 Key::S => Some(Message::Accelerate(-PLAYER_ACCELERATION)),
 
+                Key::Up => Some(Message::RotateShip(
+                    vec3(1.0, 0.0, 0.0) * SHIP_ROTATION_SPEED,
+                )),
+                Key::Down => Some(Message::RotateShip(
+                    vec3(-1.0, 0.0, 0.0) * SHIP_ROTATION_SPEED,
+                )),
+                Key::Left => Some(Message::RotateShip(
+                    vec3(0.0, 1.0, 0.0) * SHIP_ROTATION_SPEED,
+                )),
+                Key::Right => Some(Message::RotateShip(
+                    vec3(0.0, -1.0, 0.0) * SHIP_ROTATION_SPEED,
+                )),
+
                 Key::Tab => {
                     if mode_cooldown_timer == 0 {
                         mode_cooldown_timer = mode_cooldown;
@@ -132,28 +146,6 @@ fn main() {
 
                 Key::Space => Some(Message::StopShip),
 
-                // Key::Key1 => Some(Message::ChangePlanet(create_disco_planet())),
-                // Key::Key2 => Some(Message::ChangePlanet(create_ocean_planet())),
-                // Key::Key3 => Some(Message::ChangePlanet(create_gas_giant())),
-                // Key::Key4 => Some(Message::ChangePlanet(create_face_planet())),
-                // Key::Key5 => Some(Message::ChangePlanet(create_snow_planet())),
-                // Key::Key6 => Some(Message::ChangePlanet(create_sun())),
-                // Key::Key7 => Some(Message::ChangePlanet(create_green_planet())),
-
-                // Key::Space => match (mode_cooldown_timer, &data.status) {
-                //     (0, GameStatus::MainMenu) => {
-                //         mode_cooldown_timer = mode_cooldown;
-                //         Some(Message::StartGame)
-                //     }
-                //     _ => None,
-                // },
-                // Key::R => match (mode_cooldown_timer, &data.status) {
-                //     (0, GameStatus::YouLost) | (0, GameStatus::YouWon) => {
-                //         mode_cooldown_timer = mode_cooldown;
-                //         Some(Message::RestartGame)
-                //     }
-                //     _ => None,
-                // },
                 _ => None,
             })
             .collect();
@@ -251,6 +243,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let gas_planet = create_gas_giant();
     let face_planet = create_face_planet();
     let snow_planet = create_snow_planet();
+    let ocean_planet = create_ocean_planet();
     let entities = vec![
         sun,
         green_planet,
@@ -258,6 +251,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         gas_planet,
         face_planet,
         snow_planet,
+        ocean_planet,
     ];
 
     let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
@@ -281,7 +275,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         view_type: gothspace::ViewType::FirstPerson,
         textures,
         entities,
-        previous_fpv_state: (create_ship_from(&ship), camera.clone()),
+        previous_fpv_state: (create_ship_from(&ship), camera),
         ship,
         uniforms: Uniforms {
             view_matrix,
@@ -327,8 +321,15 @@ fn update(data: Model, msg: Message) -> Model {
                 ..
             } = data;
 
-            let ship_direction =
-                (ship.entity.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
+            let ship_rotation = ship.entity.model.rotation - ORIGINAL_ROTATION;
+            let ship_direction = vec3(
+                ship_rotation.x.sin(),
+                ship_rotation.y.sin(),
+                ship_rotation.z.sin(),
+            )
+            .normalize();
+            // let ship_direction =
+            //     (ship.entity.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
             ship.acceleration += ship_direction * delta;
             ship.velocity += ship.acceleration;
             if ship.velocity.magnitude() > MAX_PLAYER_SPEED {
@@ -452,6 +453,17 @@ fn update(data: Model, msg: Message) -> Model {
 
             ship.velocity = Vec3::zeros();
             ship.acceleration = Vec3::zeros();
+
+            Model { ship, ..data }
+        }
+
+        Message::RotateShip(rotation) => {
+            let Model { mut ship, .. } = data;
+
+            ship.entity.modify_model(EntityModel {
+                rotation: ship.entity.model.rotation + rotation,
+                ..ship.entity.model
+            });
 
             Model { ship, ..data }
         }

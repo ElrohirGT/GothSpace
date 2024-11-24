@@ -38,6 +38,7 @@ pub enum Message {
     ResizeWindow((usize, usize)),
     AlternateView,
     StopShip,
+    RotateShip(Vec3),
 }
 
 pub type EntityShader = (ShaderType, Vec<Color>, BlendMode);
