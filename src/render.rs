@@ -138,7 +138,7 @@ fn rasterize(
     custom_depth: Option<f32>,
 ) -> Vec<Fragment> {
     triangles
-        .iter()
+        .into_par_iter()
         .flat_map(|tri| {
             triangle(
                 &tri[0],
