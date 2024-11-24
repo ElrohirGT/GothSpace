@@ -10,11 +10,10 @@ use crate::{
     Entity, EntityModel, EntityOptimizations,
 };
 
-pub const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, 0.0, 0.0);
-// pub const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
+pub const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
 
 pub fn create_ship(initial_world_position: Vec3) -> Entity {
-    let ship_obj = load_objs("assets/models/ship.obj").unwrap();
+    let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
 
     let shaders = vec![
         (
@@ -22,10 +21,10 @@ pub fn create_ship(initial_world_position: Vec3) -> Entity {
             vec![Color::new(0, 0, 255)],
             BlendMode::Replace,
         ),
-        // (ShaderType::Intensity, vec![], BlendMode::Replace),
+        (ShaderType::Intensity, vec![], BlendMode::Replace),
     ];
 
-    let scale = 0.2;
+    let scale = 0.1;
     let rotation = ORIGINAL_ROTATION;
     let translation = initial_world_position;
     let optimizations = EntityOptimizations {
