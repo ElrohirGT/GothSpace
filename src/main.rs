@@ -6,9 +6,7 @@ use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
-use gothspace::fragment::ship::{
-    create_ship, create_ship_from, ORIGINAL_ROTATION,
-};
+use gothspace::fragment::ship::{create_ship, create_ship_from, ORIGINAL_ROTATION};
 use gothspace::light::Light;
 use gothspace::render::render;
 use gothspace::skybox::Skybox;
@@ -327,9 +325,6 @@ fn update(data: Model, msg: Message) -> Model {
                 -ship_rotation.z.cos(),
             )
             .normalize();
-            // println!("{ship_rotation:?} -> {ship_direction:?}");
-            // let ship_direction =
-            //     (ship.entity.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
             ship.acceleration += ship_direction * delta;
             ship.velocity += ship.acceleration;
             if ship.velocity.magnitude() > MAX_PLAYER_SPEED {
