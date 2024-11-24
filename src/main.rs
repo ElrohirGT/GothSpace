@@ -222,7 +222,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let (framebuffer_width, framebuffer_height) = framebuffer_dimensions;
     let (window_width, window_height) = window_dimensions;
 
-    let starting_ship_position = vec3(0.0, 0.0, 35.0);
+    let starting_ship_position = vec3(0.0, -2.0, 35.0);
     let ship = create_ship(starting_ship_position);
     let camera = Camera::new(
         starting_ship_position + CAM_POS_DELTA_TO_SHIP,

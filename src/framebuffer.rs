@@ -52,7 +52,7 @@ impl Framebuffer {
         let current_color = Color::white();
         let empty_buffer = create_filled_buffer(&width, &height, &Color::default());
         let buffer = empty_buffer.clone();
-        let z_buffer = create_filled_z_buffer(&width, &height, f32::INFINITY);
+        let z_buffer = create_filled_z_buffer(&width, &height, f32::NEG_INFINITY);
         let empty_z_buffer = z_buffer.clone();
 
         Framebuffer {
@@ -119,7 +119,7 @@ impl Framebuffer {
             (_, false) => Err(PaintPointErrors::YTooLarge),
             _ => {
                 let idx = y * *width + x;
-                if depth < z_buffer[idx] {
+                if depth > z_buffer[idx] {
                     z_buffer[idx] = depth;
                     buffer[idx] = current_color.into();
                 }

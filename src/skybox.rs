@@ -1,3 +1,4 @@
+use core::f32;
 use nalgebra_glm::{vec2, Vec3, Vec4};
 use rand::prelude::*;
 use std::f32::consts::PI;
@@ -95,21 +96,20 @@ impl Skybox {
 
                 let x = x as f32;
                 let y = y as f32;
+                let depth = -1000.0;
                 let _ = match star.size {
-                    1 => framebuffer.paint_point(vec2(x, y), 1000.0),
+                    1 => framebuffer.paint_point(vec2(x, y), depth),
                     2 => framebuffer
-                        .paint_point(vec2(x, y), 1000.0)
-                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), f32::INFINITY))
-                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), f32::INFINITY))
-                        .and_then(|_| {
-                            framebuffer.paint_point(vec2(x + 1.0, y + 1.0), f32::INFINITY)
-                        }),
+                        .paint_point(vec2(x, y), depth)
+                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), depth))
+                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), depth))
+                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y + 1.0), depth)),
                     3 => framebuffer
-                        .paint_point(vec2(x, y), 1000.0)
-                        .and_then(|_| framebuffer.paint_point(vec2(x - 1.0, y), f32::INFINITY))
-                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), f32::INFINITY))
-                        .and_then(|_| framebuffer.paint_point(vec2(x, y - 1.0), f32::INFINITY))
-                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), f32::INFINITY)),
+                        .paint_point(vec2(x, y), depth)
+                        .and_then(|_| framebuffer.paint_point(vec2(x - 1.0, y), depth))
+                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), depth))
+                        .and_then(|_| framebuffer.paint_point(vec2(x, y - 1.0), depth))
+                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), depth)),
                     _ => Ok(()),
                 };
             }
