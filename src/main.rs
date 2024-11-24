@@ -5,7 +5,7 @@ use gothspace::fragment::planets::{
     create_disco_planet, create_face_planet, create_gas_giant, create_green_planet,
     create_ocean_planet, create_snow_planet, create_sun,
 };
-use gothspace::fragment::ship::{create_ship, translation_from_camera};
+use gothspace::fragment::ship::{create_ship, translation_from_camera, ORIGINAL_ROTATION};
 use gothspace::light::Light;
 use gothspace::render::render;
 use gothspace::skybox::Skybox;
@@ -26,6 +26,8 @@ use std::time::{Duration, Instant};
 const ZOOM_SPEED: f32 = 0.1;
 const ROTATION_SPEED: f32 = PI / 60.0;
 const PLAYER_SPEED: f32 = 0.2;
+const CAM_POS_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.0, 10.0);
+const CAM_CENTER_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.5, 0.0);
 
 fn main() {
     let window_width = 1080;
@@ -219,16 +221,16 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let (framebuffer_width, framebuffer_height) = framebuffer_dimensions;
     let (window_width, window_height) = window_dimensions;
 
+    let starting_ship_position = vec3(0.0, 0.0, 5.0);
+    let ship = create_ship(starting_ship_position);
     let camera = Camera::new(
-        Vec3::new(0.0, 0.0, 5.0),
-        Vec3::new(0.0, 0.0, 0.0),
+        starting_ship_position + CAM_POS_DELTA_TO_SHIP,
+        starting_ship_position + CAM_CENTER_DELTA_TO_SHIP,
         Vec3::new(0.0, 1.0, 0.0),
         2.0,
     );
-    let ship = create_ship(&camera);
     let planet = create_green_planet();
     let entities = vec![planet];
-    // let entities = vec![];
 
     let view_matrix = create_view_matrix(camera.eye, camera.center, camera.up);
     println!("View Matrix: {:#?}", view_matrix);
@@ -269,28 +271,18 @@ fn update(data: Model, msg: Message) -> Model {
             let Model {
                 mut camera,
                 uniforms,
-                mut ship,
                 ..
             } = data;
 
-            let dir = vec3(delta_yaw, delta_pitch, 1.0).normalize();
-            camera.move_center(dir, ROTATION_SPEED);
+            // let dir = vec3(delta_yaw, delta_pitch, 1.0).normalize();
+            camera.orbit(delta_yaw, delta_pitch);
 
             let uniforms = Uniforms {
                 view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
                 ..uniforms
             };
 
-            let rotation_y = ship.model.rotation.y - delta_yaw * ROTATION_SPEED / 2.0;
-            let rotation_x = ship.model.rotation.x - delta_pitch * ROTATION_SPEED / 2.0;
-            ship.modify_model(EntityModel {
-                rotation: vec3(rotation_x, rotation_y, ship.model.rotation.z),
-                translation: translation_from_camera(&camera),
-                ..ship.model
-            });
-
             Model {
-                ship,
                 uniforms,
                 camera,
                 ..data
@@ -305,16 +297,22 @@ fn update(data: Model, msg: Message) -> Model {
                 ..
             } = data;
 
-            camera.advance_camera(delta);
+            let previous_position = ship.model.translation;
+            let ship_direction = (ship.model.rotation.cross(&vec3(1.0, 0.0, 0.0))).normalize();
+            let ship_pos_delta = ship_direction * delta;
+            let translation = previous_position + ship_pos_delta;
+
+            ship.modify_model(EntityModel {
+                translation,
+                ..ship.model
+            });
+
+            camera.center = translation;
+            camera.eye += ship_pos_delta;
             let uniforms = Uniforms {
                 view_matrix: create_view_matrix(camera.eye, camera.center, camera.up),
                 ..uniforms
             };
-
-            ship.modify_model(EntityModel {
-                translation: translation_from_camera(&camera),
-                ..ship.model
-            });
 
             Model {
                 uniforms,
@@ -326,25 +324,21 @@ fn update(data: Model, msg: Message) -> Model {
 
         Message::UpdateTime(time) => {
             let Model { uniforms, .. } = data;
-
             let uniforms = Uniforms { time, ..uniforms };
-
             Model { uniforms, ..data }
         }
 
         Message::ChangePlanet(entity) => {
             let entities = vec![entity];
-
             Model { entities, ..data }
         }
 
         Message::ZoomCamera(delta) => {
             let Model { mut camera, .. } = data;
-
             camera.zoom(delta);
-
             Model { camera, ..data }
         }
+
         Message::ResizeWindow(new_size) => {
             let Model { uniforms, .. } = data;
 

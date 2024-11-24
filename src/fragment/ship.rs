@@ -10,9 +10,9 @@ use crate::{
     Entity, EntityOptimizations,
 };
 
-const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
+pub const ORIGINAL_ROTATION: Vec3 = Vec3::new(0.0, PI, 0.0);
 
-pub fn create_ship(camera: &Camera) -> Entity {
+pub fn create_ship(initial_world_position: Vec3) -> Entity {
     let ship_obj = load_objs("assets/models/BlueFalcon.obj").unwrap();
 
     let shaders = vec![
@@ -26,7 +26,7 @@ pub fn create_ship(camera: &Camera) -> Entity {
 
     let scale = 0.1;
     let rotation = ORIGINAL_ROTATION;
-    let translation = translation_from_camera(camera);
+    let translation = initial_world_position;
     let optimizations = EntityOptimizations {
         camera_direction: false,
         frustum_cutting: false,
@@ -43,7 +43,7 @@ pub fn create_ship(camera: &Camera) -> Entity {
             scale,
             translation,
         },
-        custom_depth: Some(f32::NEG_INFINITY),
+        custom_depth: None,
     }
 }
 
