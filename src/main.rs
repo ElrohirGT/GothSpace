@@ -148,7 +148,7 @@ fn main() {
 
         let Point { x, y } = mouse.get_position().unwrap();
         messages.push(Message::RotateCamera(
-            (previous_mouse_pos.x - x) as f32 * ROTATION_SPEED,
+            (x - previous_mouse_pos.x) as f32 * ROTATION_SPEED,
             (previous_mouse_pos.y - y) as f32 * ROTATION_SPEED,
         ));
         previous_mouse_pos = Point { x, y };
