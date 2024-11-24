@@ -23,7 +23,7 @@ pub fn next_point_in_ellipsis(radians: f32, ellipsis: &Ellipsis) -> Vec3 {
     let (sin, cos) = radians.sin_cos();
     let x = a * cos;
     let z = b * sin;
-    let y = y_max * sin;
+    let y = y_max * cos;
 
     center + vec3(x, y, z)
 }

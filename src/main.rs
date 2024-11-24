@@ -25,7 +25,7 @@ use std::f32::consts::PI;
 use std::time::{Duration, Instant};
 
 const ZOOM_SPEED: f32 = 0.1;
-const ROTATION_SPEED: f32 = PI / 60.0;
+const ROTATION_SPEED: f32 = PI * 1e-3;
 const PLAYER_SPEED: f32 = 0.2;
 const CAM_POS_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.0, 10.0);
 const CAM_CENTER_DELTA_TO_SHIP: Vec3 = Vec3::new(0.0, 1.5, 0.0);
@@ -222,7 +222,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
     let (framebuffer_width, framebuffer_height) = framebuffer_dimensions;
     let (window_width, window_height) = window_dimensions;
 
-    let starting_ship_position = vec3(0.0, 0.0, 5.0);
+    let starting_ship_position = vec3(0.0, 0.0, 35.0);
     let ship = create_ship(starting_ship_position);
     let camera = Camera::new(
         starting_ship_position + CAM_POS_DELTA_TO_SHIP,

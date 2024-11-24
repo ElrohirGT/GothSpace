@@ -24,7 +24,7 @@ pub fn create_default_planet_model() -> EntityModel {
 
 const SPHERE_OBJ: &str = "assets/models/sphere.obj";
 const OPTIMIZATIONS: EntityOptimizations = EntityOptimizations {
-    camera_direction: true,
+    camera_direction: false,
     frustum_cutting: true,
 };
 
@@ -293,10 +293,10 @@ pub fn create_green_planet() -> Entity {
 
     let ellipsis = Some(Ellipsis {
         center: Vec3::zeros(),
-        a: 10.0,
-        b: 10.0,
-        y_max: 12.0,
-        velocity: 5e-3,
+        a: 50.0,
+        b: 12.0,
+        y_max: 0.0,
+        velocity: 5e-4,
     });
 
     Entity {
