@@ -42,14 +42,15 @@ fn main() {
     // framebuffer.set_background_color(0x333355);
 
     let window_options = WindowOptions {
-        // resize: true,
-        // scale: minifb::Scale::FitScreen,
+        resize: true,
+        scale: minifb::Scale::FitScreen,
         ..WindowOptions::default()
     };
 
     let title_prefix = "3D Rendering";
     let mut window =
         Window::new(title_prefix, window_width, window_height, window_options).unwrap();
+    let mut window_size = window.get_size();
     window.set_key_repeat_delay(0.01);
     window.set_cursor_visibility(true);
 
@@ -97,6 +98,7 @@ fn main() {
     let mut time = 0.0;
     while window.is_open() {
         let mut should_update = false;
+
         let start = Instant::now();
         mode_cooldown_timer = (mode_cooldown_timer - 1).max(0);
         splash_timer = (splash_timer + 1).min(splash_delay + 1);
@@ -150,6 +152,12 @@ fn main() {
 
         if let Some(delta) = window.get_scroll_wheel().map(|(_, y)| y) {
             messages.push(Message::ZoomCamera(delta * ZOOM_SPEED));
+        }
+
+        let current_window_size = window.get_size();
+        if current_window_size != window_size {
+            window_size = current_window_size;
+            messages.push(Message::ResizeWindow(window_size));
         }
 
         if previous_mouse_pos.x < window_mins.x || previous_mouse_pos.x > window_maxs.x {
@@ -336,6 +344,17 @@ fn update(data: Model, msg: Message) -> Model {
             camera.zoom(delta);
 
             Model { camera, ..data }
+        }
+        Message::ResizeWindow(new_size) => {
+            let Model { uniforms, .. } = data;
+
+            let projection_matrix = create_projection_matrix(new_size.0 as f32, new_size.1 as f32);
+            let uniforms = Uniforms {
+                projection_matrix,
+                ..uniforms
+            };
+
+            Model { uniforms, ..data }
         }
     }
 }

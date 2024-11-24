@@ -35,6 +35,7 @@ pub enum Message {
     UpdateTime(f32),
     ChangePlanet(Entity),
     Advance(f32),
+    ResizeWindow((usize, usize)),
 }
 
 pub type EntityShader = (ShaderType, Vec<Color>, BlendMode);
