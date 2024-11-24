@@ -121,6 +121,14 @@ pub fn triangle(
                 // Interpolated normal...
                 let normal = w1 * v1.normal + w2 * v2.normal + w3 * v3.normal;
                 let normal = normal.normalize();
+                // FIXME: For now the normal is fine, but this should ideally be
+                // a position using barycentrics
+                // Interpolated position...
+                let position = w1 * v1.position + w2 * v2.position + w3 * v3.position;
+
+                // Interpolated texture coords...
+                let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
+
                 if let Some(camera_direction) = camera_direction {
                     let camera_intensity = dot(&normal, camera_direction);
                     if camera_intensity >= 0.0 {
@@ -133,22 +141,19 @@ pub fn triangle(
                 let depth = if let Some(d) = custom_depth {
                     d
                 } else {
-                    w1 * v1.position.z + w2 * v2.position.z + w3 * v3.position.z
+                    // w1 * v1.position.z + w2 * v2.position.z + w3 * v3.position.z
+                    position.z
                 };
 
-                // FIXME: For now the normal is fine, but this should ideally be
-                // a position using barycentrics
-                // Interpolated position...
-                let position = if use_normal {
-                    normal
-                } else {
-                    w1 * v1.position + w2 * v2.position + w3 * v3.position
-                };
-                let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;
+                // let position = if use_normal {
+                //     normal
+                // } else {
+                //     w1 * v1.position + w2 * v2.position + w3 * v3.position
+                // };
 
                 let mut intensity = 0.0;
                 for light_source in lights {
-                    let light_dir = position - light_source.position;
+                    let light_dir = (position - light_source.position).normalize();
                     intensity += dot(&light_dir, &normal) * light_source.intensity;
                 }
 
@@ -165,26 +170,14 @@ pub fn triangle(
 }
 
 pub fn calculate_bounding_box(v1: &Vec3, v2: &Vec3, v3: &Vec3) -> ((i32, i32), (i32, i32)) {
-    let minx = v1.x.min(v2.x).min(v3.x);
-    let miny = v1.y.min(v2.y).min(v3.y);
+    let minx = v1.x.min(v2.x).min(v3.x).floor();
+    let miny = v1.y.min(v2.y).min(v3.y).floor();
 
-    let maxx = v1.x.max(v2.x).max(v3.x);
-    let maxy = v1.y.max(v2.y).max(v3.y);
+    let maxx = v1.x.max(v2.x).max(v3.x).ceil();
+    let maxy = v1.y.max(v2.y).max(v3.y).ceil();
 
     ((minx as i32, miny as i32), (maxx as i32, maxy as i32))
 }
-
-// pub fn barycentric_coordinates(p: &Vec3, a: &Vec3, b: &Vec3, c: &Vec3) -> (f32, f32, f32) {
-//     let pa = a - p;
-//     let ab = b - a;
-//     let ac = c - a;
-//
-//     let v = (pa.y * ab.x - pa.x * ab.y) / (ac.x * ab.y - ac.y * ab.x);
-//     let u = -(v * ac.y + pa.y) / ab.y;
-//     let w = 1.0 - u - v;
-//
-//     (u, v, w)
-// }
 
 fn barycentric_coordinates(p: &Vec2, a: &Vec3, b: &Vec3, c: &Vec3, area: f32) -> (f32, f32, f32) {
     let w1 = edge_function(b, c, p) / area;

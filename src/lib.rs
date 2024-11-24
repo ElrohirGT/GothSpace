@@ -6,6 +6,7 @@ pub mod framebuffer;
 pub mod light;
 pub mod obj;
 pub mod render;
+pub mod skybox;
 pub mod texture;
 pub mod vertex;
 
@@ -14,6 +15,7 @@ use color::{blenders::BlendMode, Color};
 use light::Light;
 use nalgebra_glm::{Mat4, Vec2, Vec3};
 use obj::Obj;
+use skybox::Skybox;
 use texture::GameTextures;
 use vertex::shader::{create_model_matrix, ShaderType, Uniforms};
 
@@ -78,4 +80,5 @@ pub struct Model {
     pub camera: Camera,
     pub textures: GameTextures,
     pub lights: Vec<Light>,
+    pub skybox: Skybox,
 }

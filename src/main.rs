@@ -8,6 +8,7 @@ use gothspace::fragment::planets::{
 use gothspace::fragment::ship::{create_ship, translation_from_camera};
 use gothspace::light::Light;
 use gothspace::render::render;
+use gothspace::skybox::Skybox;
 use gothspace::texture::{GameTextures, Texture};
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
@@ -39,9 +40,6 @@ fn main() {
 
     let mut framebuffer = framebuffer::Framebuffer::new(framebuffer_width, framebuffer_height);
     // framebuffer.set_background_color(0x333355);
-
-    let space_texture = Texture::new("assets/textures/space.png");
-    framebuffer.set_background_from_texture(space_texture);
 
     let window_options = WindowOptions {
         // resize: true,
@@ -233,6 +231,8 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         intensity: 1.0,
     }];
 
+    let skybox = Skybox::new(700, 100.0);
+
     let textures = GameTextures::new("assets/textures/");
     Model {
         textures,
@@ -246,6 +246,7 @@ fn init(window_dimensions: (usize, usize), framebuffer_dimensions: (usize, usize
         },
         camera,
         lights,
+        skybox,
     }
 }
 

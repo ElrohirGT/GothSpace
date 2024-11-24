@@ -21,8 +21,11 @@ pub fn render(framebuffer: &mut Framebuffer, data: &Model, noise: &mut FastNoise
         ship,
         textures,
         lights,
+        skybox,
         ..
     } = data;
+
+    skybox.render(framebuffer, uniforms, &camera.eye);
 
     let mut render_entities = Vec::with_capacity(1 + entities.len());
     render_entities.push(ship);
