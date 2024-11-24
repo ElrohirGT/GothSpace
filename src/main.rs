@@ -7,12 +7,12 @@ use gothspace::fragment::planets::{
     create_ocean_planet, create_snow_planet, create_sun,
 };
 use gothspace::fragment::ship::{
-    create_ship, create_ship_from, translation_from_camera, ORIGINAL_ROTATION,
+    create_ship, create_ship_from, ORIGINAL_ROTATION,
 };
 use gothspace::light::Light;
 use gothspace::render::render;
 use gothspace::skybox::Skybox;
-use gothspace::texture::{GameTextures, Texture};
+use gothspace::texture::GameTextures;
 use gothspace::vertex::shader::{
     create_projection_matrix, create_view_matrix, create_viewport_matrix, Uniforms,
 };

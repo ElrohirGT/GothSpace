@@ -1,11 +1,11 @@
-use std::{f32::consts::PI, ops::RangeBounds};
+use std::ops::RangeBounds;
 
 use fastnoise_lite::FastNoiseLite;
 use nalgebra_glm::{Mat4, Vec3};
 use rayon::prelude::*;
 
 use crate::{
-    fragment::{ellipsis::next_point_in_ellipsis, shaders::fragment_shader, triangle, Fragment},
+    fragment::{shaders::fragment_shader, triangle, Fragment},
     framebuffer::Framebuffer,
     light::Light,
     vertex::{
