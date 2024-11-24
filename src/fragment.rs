@@ -58,7 +58,7 @@ pub fn line(a: &Vertex, b: &Vertex) -> Vec<Fragment> {
     // let distance = nalgebra_glm::distance(&b.transformed_position, &a.transformed_position);
     // let step_size = 1.0 / (10.0 / 2.0 * distance);
     let step_size = 1.0e-3;
-    let direction = b.position - a.position;
+    let direction = b.screen_position - a.screen_position;
 
     // println!(
     //     "From {:?} to {:?}, DIR={direction:?}",
@@ -67,7 +67,7 @@ pub fn line(a: &Vertex, b: &Vertex) -> Vec<Fragment> {
 
     let mut accum = 0.0;
     while accum <= 1.0 {
-        let new_position = a.position + accum * direction;
+        let new_position = a.screen_position + accum * direction;
         // println!("POINT: {new_position:?} t={accum}");
         fragments.push(Fragment::new(
             vec3_to_vec2(&new_position),
@@ -101,7 +101,7 @@ pub fn triangle(
     // let mut fragments = wireframe_triangle(v1, v2, v3);
     // let mut fragments = vec![];
 
-    let (a, b, c) = (v1.position, v2.position, v3.position);
+    let (a, b, c) = (v1.screen_position, v2.screen_position, v3.screen_position);
 
     let triangle_area = edge_function(&a, &b, &vec3_to_vec2(&c));
     let (min, max) = calculate_bounding_box(&a, &b, &c);
@@ -124,7 +124,8 @@ pub fn triangle(
                 // FIXME: For now the normal is fine, but this should ideally be
                 // a position using barycentrics
                 // Interpolated position...
-                let position = w1 * v1.position + w2 * v2.position + w3 * v3.position;
+                let position =
+                    w1 * v1.model_position + w2 * v2.model_position + w3 * v3.model_position;
 
                 // Interpolated texture coords...
                 let tex_cords = w1 * v1.tex_coords + w2 * v2.tex_coords + w3 * v3.tex_coords;

@@ -99,15 +99,17 @@ impl Skybox {
                     1 => framebuffer.paint_point(vec2(x, y), 1000.0),
                     2 => framebuffer
                         .paint_point(vec2(x, y), 1000.0)
-                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), 1000.0))
-                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), 1000.0))
-                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y + 1.0), 1000.0)),
+                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), f32::INFINITY))
+                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), f32::INFINITY))
+                        .and_then(|_| {
+                            framebuffer.paint_point(vec2(x + 1.0, y + 1.0), f32::INFINITY)
+                        }),
                     3 => framebuffer
                         .paint_point(vec2(x, y), 1000.0)
-                        .and_then(|_| framebuffer.paint_point(vec2(x - 1.0, y), 1000.0))
-                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), 1000.0))
-                        .and_then(|_| framebuffer.paint_point(vec2(x, y - 1.0), 1000.0))
-                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), 1000.0)),
+                        .and_then(|_| framebuffer.paint_point(vec2(x - 1.0, y), f32::INFINITY))
+                        .and_then(|_| framebuffer.paint_point(vec2(x + 1.0, y), f32::INFINITY))
+                        .and_then(|_| framebuffer.paint_point(vec2(x, y - 1.0), f32::INFINITY))
+                        .and_then(|_| framebuffer.paint_point(vec2(x, y + 1.0), f32::INFINITY)),
                     _ => Ok(()),
                 };
             }

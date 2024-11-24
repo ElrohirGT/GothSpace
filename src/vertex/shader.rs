@@ -77,7 +77,12 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
         ..
     } = uniforms;
 
-    let position = vec4(vertex.position.x, vertex.position.y, vertex.position.z, 1.0);
+    let position = vec4(
+        vertex.model_position.x,
+        vertex.model_position.y,
+        vertex.model_position.z,
+        1.0,
+    );
     let transformed = projection_matrix * view_matrix * model_matrix * position;
 
     let w = transformed.w;
@@ -101,11 +106,10 @@ pub fn vertex_shader(vertex: &Vertex, uniforms: &Uniforms, model_matrix: &Mat4) 
     );
 
     Vertex {
-        position: transformed_position,
+        screen_position: transformed_position,
         normal: transformed_normal,
-        tex_coords: vertex.tex_coords,
-        color: vertex.color,
         frustum_position: ndc_position,
+        ..*vertex
     }
 }
 
