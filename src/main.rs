@@ -322,11 +322,9 @@ fn update(data: Model, msg: Message) -> Model {
             let ship_direction = vec3(
                 -ship_rotation.y.sin(),
                 -ship_rotation.x.sin(),
-                -ship_rotation.y.cos(), // YA SIRVE
+                -ship_rotation.y.cos(),
             )
             .normalize();
-
-            // println!("{ship_rotation:?} -> {ship_direction:?}");
 
             ship.acceleration += ship_direction * delta;
             ship.velocity += ship.acceleration;
