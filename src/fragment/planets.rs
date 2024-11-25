@@ -58,7 +58,7 @@ pub fn create_disco_planet() -> Entity {
         a: 10.0,
         b: 10.0,
         y_max: 0.0,
-        velocity: BASE_SLOWDOWN,
+        velocity: 10.0 * BASE_SLOWDOWN,
     });
 
     Entity {
@@ -108,7 +108,7 @@ pub fn create_ocean_planet() -> Entity {
         a: 5.0,
         b: 60.0,
         y_max: 100.0,
-        velocity: BASE_SLOWDOWN,
+        velocity: 3.0 * BASE_SLOWDOWN,
     });
 
     Entity {
@@ -140,7 +140,7 @@ pub fn create_gas_giant() -> Entity {
         a: 80.0,
         b: 90.0,
         y_max: 0.0,
-        velocity: BASE_SLOWDOWN,
+        velocity: 6.0 * BASE_SLOWDOWN,
     });
 
     Entity {
@@ -192,7 +192,7 @@ pub fn create_face_planet() -> Entity {
         a: 45.0,
         b: 60.0,
         y_max: 40.0,
-        velocity: BASE_SLOWDOWN,
+        velocity: 2.0 * BASE_SLOWDOWN,
     });
 
     Entity {
